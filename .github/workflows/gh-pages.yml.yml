@@ -21,7 +21,7 @@ jobs:
         run: dotnet publish -c Release -o dist --nologo
 
       - name: Configurar GitHub Pages
-        uses: actions/upload-pages-artifact@v2
+         uses: actions/setup-dotnet@v1
         with:
           path: dist/wwwroot  # Asegúrate de que este sea el directorio de salida correcto
 
