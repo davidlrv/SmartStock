@@ -3,7 +3,7 @@ name: Deploy ASP.NET Core to GitHub Pages
 on:
   push:
     branches:
-      - main  # O la rama donde tienes tu código
+      - main  # O la rama donde tengas tu código
 
 permissions:
   contents: read
@@ -23,13 +23,13 @@ jobs:
           dotnet-version: '8.0'  # Ajusta la versión según tu proyecto
 
       - name: Publicar la app como estática
-        run: dotnet publish -c Release -o dist --nologo
+        run: dotnet publish src/MiProyecto/MiProyecto.csproj -c Release -o dist
 
       - name: Subir artefacto para GitHub Pages
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
-          path: dist/wwwroot  # Asegúrate de que sea el directorio correcto
+          path: dist/wwwroot/  # Esta carpeta debe existir y contener index.html
 
   deploy:
     needs: build
@@ -43,8 +43,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: github-pages
-          path: ./public
+          path: .
 
       - name: Desplegar en GitHub Pages
         uses: actions/deploy-pages@v2
+
 
