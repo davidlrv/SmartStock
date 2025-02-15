@@ -23,7 +23,7 @@ jobs:
           dotnet-version: '8.0'  # Ajusta la versión según tu proyecto
 
       - name: Publicar la app como estática
-        run: dotnet publish src/MiProyecto/MiProyecto.csproj -c Release -o dist
+        run: dotnet publish MiProyecto.csproj -c Release -o dist
 
       - name: Subir artefacto para GitHub Pages
         uses: actions/upload-artifact@v4
