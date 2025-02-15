@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clonar el repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v1
 
       - name: Instalar .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.0'  # Asegúrate de usar la versión correcta
+          dotnet-version: '7.0.x'  # Asegúrate de usar la versión correcta
 
       - name: Publicar la app como estática
         run: dotnet publish -c Release -o dist --nologo
