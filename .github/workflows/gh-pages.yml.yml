@@ -5,33 +5,46 @@ on:
     branches:
       - main  # O la rama donde tienes tu código
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Clonar el repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Instalar .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0'  # Asegúrate de usar la versión correcta
+          dotnet-version: '8.0'  # Ajusta la versión según tu proyecto
 
       - name: Publicar la app como estática
         run: dotnet publish -c Release -o dist --nologo
 
-      - name: Configurar GitHub Pages
-        uses: actions/upload-pages-artifact@v2
+      - name: Subir artefacto para GitHub Pages
+        uses: actions/upload-artifact@v4
         with:
-          path: dist/wwwroot  # Asegúrate de que este sea el directorio de salida correcto
+          name: github-pages
+          path: dist/wwwroot  # Asegúrate de que sea el directorio correcto
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
+      - name: Descargar artefacto
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: ./public
+
       - name: Desplegar en GitHub Pages
         uses: actions/deploy-pages@v2
 
