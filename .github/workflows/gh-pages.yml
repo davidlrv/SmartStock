@@ -1,54 +1,41 @@
 name: DeployBlazorWebAssembly
 on:
   push:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches: [ "main" ] 
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
+    - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
         
-    - name: Restore Dependencies
-      run: dotnet restore
-
-    - name: Publish .NET Project
+    - name: Publish .NET Core Project
       run: dotnet publish SmartStock.csproj -c Release -o release --nologo
     
-    - name: Change base-tag in index.html
-      run: sed -i 's|<base href="/" />|<base href="/SmartStock/" />|g' release/wwwroot/index.html
+ 
+    - name: Change base-tag in index.html from / to SmartStock
+      run: sed -i 's/<base href="\/" \/>/<base href="\/SmartStock\/" \/>/g' release/wwwroot/index.html
     
-    - name: Copy index.html to 404.html
+ 
+    - name: copy index.html to 404.html
       run: cp release/wwwroot/index.html release/wwwroot/404.html
 
+    # (Allow files and folders starting with an underscore)
     - name: Add .nojekyll file
       run: touch release/wwwroot/.nojekyll
-
-    - name: Upload artifact for GitHub Pages
-      uses: actions/upload-pages-artifact@v2
+      
+    - name: Commit wwwroot to GitHub Pages
+      uses: davidlrv/github-pages-deploy-action@3.7.1
       with:
-        path: release/wwwroot
+        GITHUB_TOKEN: ${{ secrets.SECRET_NAME }}
+        BRANCH: gh-pages
+        FOLDER: release/wwwroot
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
-    steps:
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v2   
+
