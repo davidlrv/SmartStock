@@ -5,37 +5,44 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
         
-    - name: Publish .NET Core Project
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Publish .NET Project
       run: dotnet publish SmartStock.csproj -c Release -o release --nologo
     
- 
     - name: Change base-tag in index.html from / to SmartStock
-      run: sed -i 's/<base href="\/" \/>/<base href="\/SmartStock\/" \/>/g' release/wwwroot/index.html
+      run: sed -i 's|<base href="/" />|<base href="/SmartStock/" />|g' release/wwwroot/index.html
     
- 
-    - name: copy index.html to 404.html
+    - name: Copy index.html to 404.html
       run: cp release/wwwroot/index.html release/wwwroot/404.html
 
-    # (Allow files and folders starting with an underscore)
     - name: Add .nojekyll file
       run: touch release/wwwroot/.nojekyll
-      
-    - name: Commit wwwroot to GitHub Pages
-      uses: davidlrv/github-pages-deploy-action@3.7.1
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
       with:
-        GITHUB_TOKEN: ${{ secrets.SMARTSTOCK_SECRET_NAME }}
-        BRANCH: gh-pages
-        FOLDER: release/wwwroot
+        path: release/wwwroot
 
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
 
-
+    steps:
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages@v2
