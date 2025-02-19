@@ -1,51 +1,41 @@
-name: Deploy ASP.NET Core to GitHub Pages
-
+name: DeployBlazorWebAssembly
 on:
   push:
-    branches:
-      - main  # O la rama donde tengas tu código
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches: [ "main" ] 
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
-    steps:
-      - name: Clonar el repositorio
-        uses: actions/checkout@v4
-
-      - name: Instalar .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0'  # Ajusta la versión según tu proyecto
-
-      - name: Publicar la app como estática
-        run: dotnet publish SmartStock.csproj -c Release -o dist
-
-      - name: Subir artefacto para GitHub Pages
-        uses: actions/upload-artifact@v4
-        with:
-          name: github-pages
-          path: dist/wwwroot/  # Esta carpeta debe existir y contener index.html
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Descargar artefacto
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages
-          path: .
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Publish .NET Core Project
+      run: dotnet publish BlazorGitHubPagesDemo.csproj -c Release -o release --nologo
+    
+ 
+    - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
+      run: sed -i 's/<base href="\/" \/>/<base href="\/SmartStock\/" \/>/g' release/wwwroot/index.html
+    
+ 
+    - name: copy index.html to 404.html
+      run: cp release/wwwroot/index.html release/wwwroot/404.html
 
-      - name: Desplegar en GitHub Pages
-        uses: actions/deploy-pages@v2
+    # (Allow files and folders starting with an underscore)
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+      
+    - name: Commit wwwroot to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: release/wwwroot
+
 
 
