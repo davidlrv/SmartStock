@@ -19,7 +19,7 @@ jobs:
       run: dotnet publish SmartStock.csproj -c Release -o release --nologo
     
  
-    - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
+    - name: Change base-tag in index.html from / to SmartStock
       run: sed -i 's/<base href="\/" \/>/<base href="\/SmartStock\/" \/>/g' release/wwwroot/index.html
     
  
