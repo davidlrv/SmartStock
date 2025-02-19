@@ -34,7 +34,7 @@ jobs:
       uses: davidlrv/github-pages-deploy-action@3.7.1
       with:
         GITHUB_TOKEN: ${{ secrets.SMARTSTOCK_SECRET_NAME }}
-        BRANCH: main
+        BRANCH: gh-pages
         FOLDER: release/wwwroot
 
 
