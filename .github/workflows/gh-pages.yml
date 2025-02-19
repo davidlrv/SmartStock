@@ -26,7 +26,7 @@ jobs:
     - name: copy index.html to 404.html
       run: cp release/wwwroot/index.html release/wwwroot/404.html
 
-    # (Allow files and folders starting with an underscore)
+    # (Allow files and folders starting with an underscore..)
     - name: Add .nojekyll file
       run: touch release/wwwroot/
       
