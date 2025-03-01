@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -21,7 +25,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-           <div class="text-center"> &copy; @DateTime.Now.Year - SmartStock  </div> 
+            <div class="text-center"> &copy; @DateTime.Now.Year SmartStock  - @Configuration["Config:AppName"] </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

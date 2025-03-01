@@ -2,6 +2,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+// Habilitar la lectura de configuración desde appsettings.json
+
 
 var app = builder.Build();
 
