@@ -12,7 +12,23 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SmartStock.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css">
+
+  
+    <meta name="author" content="SmartStock">
+    <meta name="description" content="Sistema de inventario y punto de venta eficiente y fácil de usar. Controla tu stock, ventas y clientes desde una plataforma centralizada.">
+    <meta name="keywords" content="sistema de inventario, punto de venta, POS, gestión de stock, facturación, ventas, control de productos, Nicaragua">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#19875405"> <!-- Color de la interfaz en navegadores móviles -->
+    <meta property="og:title" content="Sistema de Inventario y Punto de Venta">
+    <meta property="og:description" content="Optimiza tu negocio con un sistema de inventario y punto de venta ágil y seguro.">
+    <meta property="og:image" content="@Configuration["Config:UrlLogo"]">
+    <meta property="og:url" content="URL_DE_TU_SITIO">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sistema de Inventario y Punto de Venta">
+    <meta name="twitter:description" content="Gestiona tu inventario y ventas de manera eficiente con nuestra solución todo en uno.">
+    <meta name="twitter:image" content="@Configuration["Config:UrlLogo"]">
 
 </head>
 <body>
@@ -28,8 +44,8 @@
             <div class="text-center"> &copy; @DateTime.Now.Year SmartStock  - @Configuration["Config:AppName"] </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" ></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" ></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.all.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)

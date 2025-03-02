@@ -12,7 +12,7 @@
                 <div class="card w-100 myradio">
                     <div class="card-body">
                         <div class="row m-3 d-flex justify-content-center">
-                            <img class="w-50" src=@Configuration["Config:UrlLogo"] alt="Logo...">
+                            <img class="w-50" src=@Configuration["Config:UrlLogoWebp"] alt="Logo...">
                         </div>
 
                         <h1 class="card-title text-center text-success mt-3 mb-3">
@@ -26,8 +26,8 @@
                         <div class="form-floating">
                             <input type="password" class="form-control" id="idPassword" placeholder="Password" required>
                             <label class="labelfloating" for="idPassword">Contraseña</label>
-                            <button type="button" class="position-absolute end-0 top-50 translate-middle-y me-2 text-success" onclick="togglePassword()">
-                                <i id="eyeIcon" class="bi bi-eye"></i>
+                            <button type="button" class="position-absolute end-0 top-50 translate-middle-y me-2 text-success" onclick="togglePassword()" id="BtnTogglePassword">
+                                <i id="eyeIcon" class="bi bi-eye"></i>.
                             </button>
                         </div>
                         <div class="row">
