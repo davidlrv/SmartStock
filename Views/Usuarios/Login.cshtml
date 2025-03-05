@@ -1,0 +1,72 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="row w-100">
+        <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12"></div>
+        <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12">
+            <form asp-controller="Usuarios" asp-action="Login" method="post">
+                <div class="card w-100 myradio">
+                    <div class="card-body">
+                        <div class="row m-3 d-flex justify-content-center">
+                            <img class="w-50" src=@Configuration["Config:UrlLogoWebp"] alt="Logo...">
+                        </div>
+
+                        <h1 class="card-title text-center text-success mt-3 mb-3">
+                            <i class="bi bi-person-circle"></i>
+                        </h1>
+                        <h2 class="card-title text-center text-success mt-3 mb-3">Login</h2>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="Usuario" name="Usuario" placeholder="Usuario" required>
+                            <label class="labelfloating" for="Usuario">Usuario</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="Clave" name="Clave" placeholder="Password" required>
+                            <label class="labelfloating" for="Clave">Contraseña</label>
+                            <button type="button" class="position-absolute end-0 top-50 translate-middle-y me-2 text-success" onclick="togglePassword()" id="BtnTogglePassword">
+                                <i id="eyeIcon" class="bi bi-eye"></i>.
+                            </button>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center mt-4 mb-3">
+                                <button class="btn btn-outline-success" type="submit" onclick="acceder()">Acceder</button>
+                            </div>
+                        </div>
+                        <div class="row m-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="idRecordame" checked>
+                                <label class="form-check-label" for="idRecordame">Recordarme</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+           
+
+        </div>
+        <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12"></div>
+    </div>
+</div>
+<script>
+    function togglePassword() {
+        let passwordInput = document.getElementById("idPassword");
+        let eyeIcon = document.getElementById("eyeIcon");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("bi-eye");
+            eyeIcon.classList.add("bi-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("bi-eye-slash");
+            eyeIcon.classList.add("bi-eye");
+        }
+    }
+    function acceder(){
+    }
+
+</script>
