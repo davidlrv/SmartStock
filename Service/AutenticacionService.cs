@@ -23,9 +23,9 @@ namespace SmartStock.Service
         {
             try
             {
-                var url = _configuration["settings:urlAPI-LGF"] + "Autenticacion/Validar";
-                string correo = _configuration["settings:correoAPI-LGF"] ?? "";
-                string clave = _configuration["settings:claveAPI-LGF"] ?? "";
+                var url = _configuration["ConfigAPI:urlAPI"] + "Autorizacion/getToken";
+                string correo = _configuration["ConfigAPI:correo"] ?? "";
+                string clave = _configuration["ConfigAPI:clave"] ?? "";
 
                 var usuario = new { correo, clave };
                 var json = JsonSerializer.Serialize(usuario);

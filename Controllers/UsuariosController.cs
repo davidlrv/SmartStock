@@ -31,7 +31,7 @@ namespace SmartStock.Controllers
                 //LoginRequest loginRequest = new LoginRequest();
                 //loginRequest.Usuario = usuario;
                 //loginRequest.Clave = clave;
-                loginRequest.Patron = _configuration["settings:Patron"];
+                loginRequest.Patron = _configuration["ConfigLogin:Patron"];
 
                 var user = await _apiService.Run("sp_login", loginRequest);
                 if (user.Contains("Data is Null"))
@@ -67,7 +67,7 @@ namespace SmartStock.Controllers
                     //si se aacede con clave temporal, se manda directo al perfil
                     if (_usuario.DATA[0].Clave.Contains("T3mP"))
                         return RedirectToAction("Perfil", "Usuarios", new { Id_Usuario = _usuario.DATA[0].Id_Usuario });
-                    else return RedirectToAction("Home", "Index");
+                    else return RedirectToAction("Index", "Home");
                 }
                 else
                 {

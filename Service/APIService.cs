@@ -31,7 +31,7 @@ namespace SmartStock.Service
         {
             try
             {
-                var url = _configuration["settings:urlAPI-LGF"] + "VersaLinks/" + sp;
+                var url = _configuration["ConfigAPI:urlAPI"] + "VersaLinks/" + sp;
               
                 var json = System.Text.Json.JsonSerializer.Serialize(parametro);
                 var data = new StringContent(json, Encoding.UTF8, "application/json");
@@ -66,7 +66,7 @@ namespace SmartStock.Service
 
         public async Task<string> SendEmail(EmailModel email)
         {
-            var url = _configuration["settings:urlAPI-LGF"] + "VersaLinks/SendEmail";
+            var url = _configuration["ConfigAPI:urlAPI"] + "VersaLinks/SendEmail";
 
             try
             {
