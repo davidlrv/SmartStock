@@ -27,7 +27,7 @@
                             <input type="password" class="form-control" id="Clave" name="Clave" placeholder="Password" required>
                             <label class="labelfloating" for="Clave">Contraseña</label>
                             <button type="button" class="position-absolute end-0 top-50 translate-middle-y me-2 text-success" onclick="togglePassword()" id="BtnTogglePassword">
-                                <i id="eyeIcon" class="bi bi-eye"></i>.
+                                <i id="eyeIcon" class="bi bi-eye"></i>
                             </button>
                         </div>
                         <div class="row">
@@ -53,7 +53,7 @@
 </div>
 <script>
     function togglePassword() {
-        let passwordInput = document.getElementById("idPassword");
+        let passwordInput = document.getElementById("Clave");
         let eyeIcon = document.getElementById("eyeIcon");
 
         if (passwordInput.type === "password") {

@@ -8,6 +8,16 @@ html {
   }
 }
 
+a[b-d8q5qnkadf] {
+    color: #adb2b6 !important;
+}
+/* this is needed to make the content scrollable on larger screens */
+@media (min-width: 576px) {
+    .h-sm-100 {
+        height: 100%;
+    }
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
