@@ -102,5 +102,167 @@ namespace SmartStock.Controllers
 
         }
 
+        [Authorize]
+        public async Task<IActionResult> Perfil(Usuarios model)
+        {
+            model.Patron = _configuration["ConfigLogin:Patron"];
+            var user = await _apiService.Run("sp_Mostrar_Usuarios", model);
+
+            if (user.Contains("Data is Null"))
+            {
+                model.Activo = true;
+                return View(model); // Retorna la vista Perfil sin datos
+            }
+            else
+            {
+                ResponseDataUser? _usuario = JsonConvert.DeserializeObject<ResponseDataUser>(user.ToString());
+                model = _usuario.DATA[0];
+                model.Patron = _configuration["ConfigLogin:Patron"];
+                ModelState.ClearValidationState(nameof(model.Usuario));
+                ModelState.ClearValidationState(nameof(model.Nombre));
+                ModelState.ClearValidationState(nameof(model.Correo));
+                ModelState.ClearValidationState(nameof(model.Activo));
+                ModelState.ClearValidationState(nameof(model.Clave));
+                ModelState.ClearValidationState(nameof(model.Id_Usuario));
+                ModelState.ClearValidationState(nameof(model.Nombre_Rol));
+                ModelState.ClearValidationState(nameof(model.Patron));
+                TryValidateModel(model);
+                if (!ModelState.IsValid)
+                {
+                    // Manejar el estado no válido del modelo si es necesario
+                    return View(model);
+                }
+                else
+                    return View(model); // Retorna la vista Perfil con los datos del usuario
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GuardarPerfil(Usuarios model)
+        {
+                 model.Patron = _configuration["ConfigLogin:Patron"];
+
+                var user = await _apiService.Run("sp_Guardar_Usuario", model);
+
+                if (user.Contains("Data is Null") || user.Contains("ErrorMessage"))
+                {
+                    // Si hay un error, podrías enviar un mensaje de error a la vista, si lo deseas.
+                    TempData["Message"] = "Hubo un error al guardar el perfil. Por favor, intenta de nuevo.";
+                    TempData["MessageType"] = "success"; // Puedes utilizar esto para determinar el tipo de mensaje en la vista.
+                    return RedirectToAction("Perfil", new { Id_Usuario = model.Id_Usuario });
+                }
+                else
+                {
+                    // Guardado exitoso, pasamos un mensaje de éxito a la vista.
+                    TempData["Message"] = "El perfil se guardo correctamente.";
+                    TempData["MessageType"] = "success"; // Esto es opcional, pero puede ser útil para definir el estilo del mensaje.
+                    ResponseDataUser? _usuario = JsonConvert.DeserializeObject<ResponseDataUser>(user.ToString());
+                    return RedirectToAction("Perfil", new { Id_Usuario = _usuario.DATA[0].Id_Usuario });
+                }
+        
+        }
+
+        public IActionResult RecuperarPass()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Recuperar(String Correo, string recaptchaResponse)
+        {
+            dynamic parametros = new
+                {
+                    Correo = Correo,
+                    Patron = _configuration["ConfigLogin:Patron"]
+                };
+
+
+                var user = await _apiService.Run("sp_Recuperar_Login", parametros);
+                if (user.Contains("Data is Null"))
+                {
+
+                    TempData["Message"] = "Usuario no encontrador.";
+                    TempData["MessageType"] = "success";
+
+                    return View();
+                }
+
+                ResponseDataUser? _usuario = JsonConvert.DeserializeObject<ResponseDataUser>(user.ToString());
+
+                if (_usuario != null)
+                {
+
+                    TempData["MessageType"] = "success";
+
+                    //Enviar Correo con la clave de recuperacion
+                    var estado = await SendEmailPass(_usuario.DATA[0]);
+
+                    if (!string.IsNullOrEmpty(estado.ToString()))
+                    {
+                        TempData["Message"] = "Se enviaron credenciales temporales al correo indicado";
+                    }
+                    else
+                    {
+                        TempData["Message"] = "Ocurrió un error al intentar enviar el correo:";
+                    }
+                    // Redirige a la acción RecuperarPass
+                    return RedirectToAction("RecuperarPass");
+                }
+                else
+                {
+                    TempData["MessageType"] = "success";
+                    TempData["Message"] = "Usuario no registrado!";
+                    return RedirectToAction("RecuperarPass");
+                }
+            
+     }
+
+        public async Task<IActionResult> SendEmailPass(Usuarios User)
+        {
+            try
+            {
+                EmailModel email = new EmailModel();
+
+                email.Content = ""
+                                 + "<body style=\"font-family:Arial,sans-serif;color:#333;margin:0;padding:0;background-color:#fff;\">"
+                                 + "<div style=\"width:100%;max-width:600px;margin:0 auto;background-color:#FFF5EC;padding:20px;box-shadow:0 0 10px rgba(0,0,0,0.1);\">"
+                                 + "<div align=\"center\" class=\"img-container center\" style=\"padding-right:0px;padding-left:0px;\">"
+                                 + "<img class=\"center\" style=\"margin:0 auto 0 0;text-align:center !important;border:0px none;height:auto;max-width:375px;\" title=\"LaGranFrancia\" src=\"https://www.lagranfrancia.com/Assets/images/logoLGF-black.png\" alt=\"LaGranFrancia\" width=\"375\" border=\"0\" align=\"middle\" loading=\"lazy\">"
+                                 + "<div style=\"line-height:20px;font-size:1px;\">&nbsp;</div></div>"
+                                 + "<div style=\"background-color:#BF8C2C;color:#fff;padding:10px 20px;text-align:center;\">"
+                                 + "<h1 style=\"margin:0;\">Recuperación de Credenciales</h1></div>"
+                                 + "<div style=\"padding:20px;\">"
+                                 + "<p style=\"font-size:16px;line-height:1.6;\">Estimado/a [Nombre_deldestinatario],</p>"
+                                 + "<p style=\"font-size:16px;line-height:1.6;\">Se ha restablecido exitosamente su contraseña de acceso. Por motivos de seguridad, se le ha asignado una contraseña temporal. Le recomendamos encarecidamente que cambie esta contraseña en su próximo inicio de sesión.</p>"
+                                 + "<p style=\"font-size:16px;line-height:1.6;\"><b>Usuario: [username]</b></p>"
+                                 + "<p style=\"font-size:16px;line-height:1.6;\"><b>Clave Temporal: [pass]</b></p>"
+                                 + "<p style=\"font-size:16px;line-height:1.6;\">¡No olvides crear una contraseña súper fuerte! Tu seguridad en línea depende de ello.</p>"
+                                 + "<p style=\"font-size:16px;line-height:1.6;\">Saludos cordiales,<br>Administración</p></div>"
+                                 + "<div style=\"margin-top:20px;text-align:center;font-size:12px;color:#777;\">"
+                                 + "<p>© [yyyy] Hotel La Gran Francia. Todos los derechos reservados.</p>"
+                                 + "<p style=\"text-align:center;\">"
+                                 + "<a href=\"https://www.lagranfrancia.com/usuarios/login\" style=\"display:inline-block;padding:10px 20px;background-color:#BF8C2C;color:#fff;text-decoration:none;font-size:16px;border-radius:5px;\">"
+                                 + "www.lagranfrancia.com</a></p></div></div></body>";
+
+
+
+
+                email.Content = email.Content.Replace("[Nombre_deldestinatario]", User.Nombre);
+                email.Content = email.Content.Replace("[username]", User.Usuario);
+                email.Content = email.Content.Replace("[pass]", User.Clave);
+                email.Content = email.Content.Replace("[yyyy]", DateTime.Now.Year.ToString());
+
+                email.Subject = "Recuperación de Credenciales";
+                email.Recipient = User.Correo;
+                email.RecipientName = User.Nombre;
+
+                var Repuesta = await _apiService.SendEmail(email);
+
+                return Json(new { Repuesta = Repuesta.ToString() });
+            }
+            catch (HttpRequestException ex)
+            {
+                //return StatusCode(500, ex.Message);
+                return Json(new { success = false });
+            }
+        }
     }
 }

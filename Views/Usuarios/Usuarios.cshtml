@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Lista de Usuarios";
+    Layout = "~/Views/Shared/_LayoutB.cshtml";
+}
+
+<section class="container" style="position:relative">
+        <h3 class="mb-4">Gestión de Usuarios.</h3>
+
+        @*Solamente Super Administrador puede agregar nuevos usuarios*@
+         @if (User.IsInRole("Super Administrador")){
+            <p class="mb-0 d-flex">
+                <a class="button-formularios-d-Habitacion" asp-area="" asp-controller="Usuarios" asp-action="Perfil">Agregar Usuario</a>
+            </p>
+        }
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id Usuario</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Activo</th>
+                <th>Activo</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.Id_Usuario</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Correo</td>
+                    <td>@usuario.Usuario</td>
+                    <td>@usuario.Nombre_Rol</td>
+                    <td>@(usuario.Activo ? "Sí" : "No")</td>
+                    <td>@usuario.Nombre_Rol</td>
+                    <td>
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <a class="btn btn-detalles" data-bs-toggle='tooltip' data-bs-placement='top' title='Perfil información' asp-controller="Usuarios" asp-action="Perfil" asp-route-Id_Usuario="@usuario.Id_Usuario">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>  
+                            </div>    
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+
+
+
+

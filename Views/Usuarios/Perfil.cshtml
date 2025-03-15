@@ -1,0 +1,242 @@
+﻿@{
+    ViewData["Title"] = "Perfil";
+    Layout = "~/Views/Shared/_LayoutB.cshtml";
+}
+@model Usuarios
+
+<div class="container mt-3 pb-5">
+    <section class="container" style="position:relative">
+        <h1>Perfil de Usuario</h1>
+
+        <h4>Se agregan usuario con su respectivo Rol.</h4>
+        <hr class="m-3">
+        <div class="row pb-3">
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header text-center p-3 header-back">
+                                <h3>Usuario</h3>
+                            </div>
+                            <div class="card-body p-3">
+
+                                @if (TempData["Message"] != null)
+                                {
+                                    <div class="alert alert-@TempData["MessageType"]" id="mensaje">
+                                        @TempData["Message"]
+
+                                        <script>
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                Swal.fire({
+                                                    icon: "info",
+                                                    text: document.getElementById("tempDataMessage").value,
+                                                    showConfirmButton: true,
+                                                    confirmButtonColor: "#bb2d3b",
+                                                    timer: 1500
+                                                });
+                                            });
+
+                                        </script>
+                                    </div>
+                                }
+
+                                <form asp-controller="Usuarios" asp-action="GuardarPerfil" method="post" id="myForm">
+                                   
+                                    <div class="row g-3">
+                                      
+                                      
+                                        @{
+                                            var esSoloLectura = (User.IsInRole("Recepcion") || User.IsInRole("Administrador"));
+                                        }
+
+                                        <!-- Nombre Usuario -->
+                                        <div class="col-md-6">
+                                            <label asp-for="Nombre" class="control-label"></label>
+                                            <input asp-for="Nombre" class="form-control" required />
+                                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                                        </div>
+
+                                        <!-- correo -->
+                                        <div class="col-md-6">
+                                            <label asp-for="Correo" class="control-label"></label>
+                                            @if (esSoloLectura)
+                                            {
+                                                <input asp-for="Correo" class="form-control"  type="email" readonly required style="pointer-events: none;" />
+                                            }
+                                            else
+                                            {
+                                                <input asp-for="Correo" class="form-control" type="email" required />
+                                            }
+                                           
+                                            <span asp-validation-for="Correo" class="text-danger"></span>
+                                        </div>
+
+                                        <!-- Usuario -->
+                                        <div class="col-md-6">
+                                            <label asp-for="Usuario" class="control-label"></label>
+                                            @if (esSoloLectura)
+                                            {
+                                                <input asp-for="Usuario" class="form-control" readonly required style="pointer-events: none;" />
+                                            }
+                                            else
+                                            {
+                                                <input asp-for="Usuario" class="form-control" required />
+                                            }
+                                          
+                                            <span asp-validation-for="Usuario" class="text-danger"></span> 
+                                        </div>
+
+                                       
+                                        <!-- Rol -->
+                                        <div class="col-md-6">
+                                            <label asp-for="Nombre_Rol" class="control-label"></label>
+                                            @if (esSoloLectura)
+                                            {
+                                                <select asp-for="Nombre_Rol" class="form-control custom-select-arrow" id="rol" required readonly style="pointer-events: none;">
+                                                    <option value="Administrador">Administrador</option>
+                                                    <option value="Recepcion">Recepcion</option>
+                                                    <option value="Super Administrador">Super Administrador</option>
+                                                </select>
+                                             } 
+                                             else{
+                                                     <select asp-for="Nombre_Rol" class="form-control custom-select-arrow" id="rol" required>
+                                                        <option value="Administrador">Administrador</option>
+                                                        <option value="Recepcion">Recepcion</option>
+                                                        <option value="Super Administrador">Super Administrador</option>
+                                                    </select>
+                                               }
+                                               
+                                            <span asp-validation-for="Nombre_Rol" class="text-danger"></span>
+                                        </div>
+
+                                        @*Activo*@
+                                        <div class="col-md-12">
+                                            <div class="form-check form-switch">
+                                               <input asp-for="Activo" class="form-check-input" type="checkbox" id="activo">
+                                                <label class="form-check-label" for="activo">Estado</label>
+                                                <span asp-validation-for="Activo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                         <!-- Clave Usuario -->
+                                        <div class="col-md-6">
+                                            <label asp-for="Clave" class="control-label">Contraseña</label>
+                                            <input asp-for="Clave" class="form-control" id="clave" type="password" required />
+                                            <span asp-validation-for="Clave" class="text-danger"></span>
+                                            <small id="passwordHelp" class="form-text text-muted"></small>
+                                        </div>
+
+                                        <!-- Repetir Clave Usuario -->
+                                        <div class="col-md-6">
+                                            <label for="Clave2" class="control-label">Repetir Contraseña</label>
+                                            <input for="Clave2" class="form-control" id="clave2" type="password" required />
+                                            <small id="passwordHelp2" class="form-text text-muted"></small>
+                                        </div>
+
+                                        <!--Pasar usuario de manera oculta con un valor predeterminado-->
+                                        <input asp-for="Id_Usuario" type="hidden" />
+                                    
+                                       
+                                    </div>
+
+                                    <div class="mt-4 d-flex gap-2">
+                                      
+                                        <button id="btnAcceder1" type="button" class="btn btn-success" onclick="Guardar()">Guardar</button>
+                                        <button type="submit" id="btnAcceder2" style="display:none;">Guardar</button>
+                                        @if (User.IsInRole("Super Administrador") || User.IsInRole("Administrador"))
+                                        {
+                                            <a id="ES" class="btn btn-outline-success" href="/Usuarios/Usuarios">Regresar al Listado</a>
+                                            
+                                        }
+
+                                    </div>
+
+                                    @if (esSoloLectura){
+                                            <script>
+                                                document.getElementById('activo').addEventListener('click', function (e) {
+                                                    e.preventDefault(); // Evita que se cambie el estado del checkbox
+                                                });
+                                                    
+                                            </script>
+                                        }
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<!-- Referencia al archivo JS externo -->
+<script src="~/js/validacionClave.js"></script>
+
+
+
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Oculta todos los mensajes de validación al cargar la página
+        document.querySelectorAll("span.text-danger").forEach(function (span) {
+            span.style.display = "none";
+        });
+    });
+
+
+
+    function validateForm() {
+
+        const requiredFields = document.querySelectorAll('#myForm input[required]');
+        let firstMissingField = null;
+
+        for (let field of requiredFields) {
+            if (!field.value || !field.checkValidity()) {
+                if (!firstMissingField) {
+                    firstMissingField = field;
+                }
+            }
+        }
+
+        if (firstMissingField) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Advertencia',
+                text: 'Algunos campos faltan rellenar o están mal. ' + firstMissingField.name,
+                confirmButtonText: "Ok"
+            }).then(() => {
+                firstMissingField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Verifica si el campo está en la vista y entonces enfoca
+                setTimeout(() => {
+                    firstMissingField.focus();
+                    $(firstMissingField).next('span.text-danger').show();
+                    $('#mensaje').hide();
+                }, 500); // Ajusta el tiempo si es necesario
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function Guardar() {
+        event.preventDefault();
+        if (validateForm()) {
+            document.getElementById('btnAcceder2').click();
+        }
+    }
+
+
+</script>

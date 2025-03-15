@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div class="container mt-3 pb-5">
+    <section class="container" style="position:relative">
+        <h1>Recuperar clave de acceso</h1>
+
+        <h4>Solamente se pueden recuperar credenciales los usuarios con rol Super Administrador</h4>
+        <hr class="m-3">
+        <div class="row pb-3">
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header text-center p-3">
+                                <h3>Ingrese el correo electrónico con el que se registró el usuario.</h3>
+                            </div>
+                            <div class="card-body p-3">
+                               @if (TempData["Message"] != null)
+                                {
+                                    <div class="alert alert-@TempData["MessageType"]" id="mensaje">
+                                        @TempData["Message"]
+                                       
+                                        <script>
+                                             $(document).ready(function () {
+                                                    Swal.fire({
+                                                        icon: "info",
+                                                        text: "@TempData["Message"]",
+                                                        showConfirmButton: true,
+                                                        confirmButtonColor: "#bb2d3b",
+                                                        timer: 1500
+                                                    });
+
+                                                });
+
+                                        </script>
+                                    </div>
+                                    TempData["Message"] = null;
+                                }
+
+                                <form asp-controller="Usuarios" asp-action="Recuperar" method="post">
+                                  
+                                    <div class="row g-3">
+                                       
+                                        <!-- Correo de usuario -->
+                                        <div class="col-md-12">
+                                            <label for="Correo" class="control-label">Correo:</label>
+                                            <input id="Correo" name="Correo" class="form-control" type="email"/>
+                                           
+                                        </div>
+
+                                       
+                                    </div>
+                                    <div class="mt-4 d-flex gap-2">
+                                         <input type="hidden" name="recaptchaResponse" id="recaptchaResponse">
+
+                                        <button id="btnAcceder1" type="button" class="btn-secondary button-formularios-d-Habitacion btn-equal" onclick="validar()">Recuperar</button>
+                                        <button type="submit" id="btnAcceder2" style="display:none;">Acceder</button>
+
+                                        <a id="ES" class="button-formularios-d-Habitacion btn-equal" href="/Usuarios/Login">Regresar al Login</a>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    function validar() {
+        const Correo = document.getElementById('Correo').value.trim();
+       
+        if (Correo === '') {
+           
+            Swal.fire({
+                icon: "info",
+                text: "Por favor, complete todos los campos.",
+                showConfirmButton: true,
+                confirmButtonColor: "#bb2d3b",
+                timer: 1500
+            });
+        } else {
+            document.getElementById('btnAcceder2').click(); // Realiza clic en el botón oculto si la validación es correcta
+        }
+    }
+</script>
+
+
+

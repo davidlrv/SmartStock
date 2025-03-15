@@ -1,6 +1,6 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
-
+@using Microsoft.AspNetCore.Identity
 <!DOCTYPE html>
 
 <html lang="en">
@@ -115,21 +115,21 @@
                         </li>
 
                     </ul>
-                    @* Usuaeio *@
+                    @* Usuario *@
                     <div class="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
                         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                            @*  <img src="https://github.com/mdo.png" alt="hugenerd" width="28" height="28" class="rounded-circle"> *@
                             <i class="fs-3 bi-person-gear"></i>
-                            <span class="d-none d-sm-inline mx-1">drivas</span>
+                            <span class="d-none d-sm-inline mx-1"> @User.Identity.Name </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                            <li><a class="dropdown-item" href="#"> <i class="bi bi-person-fill-gear"></i> Gestion de Usuarios</a></li>
+                            <li><a class="dropdown-item" href="/Usuarios/Usuarios"> <i class="bi bi-person-fill-gear"></i> Gestion de Usuarios</a></li>
                             <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i>  Roles </a></li>
-                            <li><a class="dropdown-item" href="#"> <i class="bi bi-person-check"></i> Mi Perfil</a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="Perfil" asp-route-Id_Usuario="@User.FindFirst("Id_Usuario")?.Value"> <i class="bi bi-person-check"></i> Mi Perfil</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="Salir">Cerrar la Sesión</a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="Salir"> <i class="bi bi-box-arrow-left"></i> Cerrar la Sesión</a></li>
                         </ul>
                     </div>
                 </div>
@@ -152,6 +152,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
