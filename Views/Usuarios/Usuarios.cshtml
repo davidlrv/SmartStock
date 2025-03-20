@@ -10,7 +10,7 @@
         @*Solamente Super Administrador puede agregar nuevos usuarios*@
          @if (User.IsInRole("Super Administrador")){
             <p class="mb-0 d-flex">
-                <a class="button-formularios-d-Habitacion" asp-area="" asp-controller="Usuarios" asp-action="Perfil">Agregar Usuario</a>
+            <a class="btn btn-success" asp-area="" asp-controller="Usuarios" asp-action="Perfil">Agregar Usuario</a>
             </p>
         }
 
