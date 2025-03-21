@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_LayoutB.cshtml";
 }
 
-<section class="container" style="position:relative">
         <h3 class="mb-4">Gestión de Usuarios.</h3>
 
         @*Solamente Super Administrador puede agregar nuevos usuarios*@
@@ -13,9 +12,21 @@
             <a class="btn btn-success" asp-area="" asp-controller="Usuarios" asp-action="Perfil">Agregar Usuario</a>
             </p>
         }
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 
-    <table class="table table-striped">
+<script>
+    $(document).ready( function () {
+        let table = new DataTable('#myTable', {
+            responsive: true,      // Hace la tabla adaptable a móviles
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' // Traducción completa
+        }
+    });
+    } );
+</script>
+
+<table class="table table-striped table-responsive table-hover table-sm" id="myTable">
         <thead>
             <tr>
                 <th>Id Usuario</th>
@@ -23,7 +34,6 @@
                 <th>Correo</th>
                 <th>Usuario</th>
                 <th>Rol</th>
-                <th>Activo</th>
                 <th>Activo</th>
                 <th>Opciones</th>
             </tr>
@@ -38,21 +48,21 @@
                     <td>@usuario.Usuario</td>
                     <td>@usuario.Nombre_Rol</td>
                     <td>@(usuario.Activo ? "Sí" : "No")</td>
-                    <td>@usuario.Nombre_Rol</td>
                     <td>
                         <div class="row">
                             <div class="col-6 text-center">
                                 <a class="btn btn-detalles" data-bs-toggle='tooltip' data-bs-placement='top' title='Perfil información' asp-controller="Usuarios" asp-action="Perfil" asp-route-Id_Usuario="@usuario.Id_Usuario">
                                     <i class="bi bi-pencil-square"></i>
-                                </a>  
-                            </div>    
+                                </a>
+                            </div>
                         </div>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-</section>
+
+
 
 
 
