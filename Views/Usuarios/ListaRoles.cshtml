@@ -1,0 +1,64 @@
+﻿@model List<SmartStock.Models.Roles>
+
+
+@{
+    ViewData["Title"] = "Lista de Roles";
+    Layout = "~/Views/Shared/_LayoutB.cshtml";
+}
+
+<h3 class="mb-4">Gestión de Roles</h3>
+
+@*Solamente Super Administrador puede agregar nuevos usuarios*@
+    @if (User.IsInRole("Super Administrador")){
+    <p class="mb-0 d-flex">
+    <a class="btn btn-success" asp-area="" asp-controller="Usuarios" asp-action="ListaRoles">Agregar Rol de Usuario</a>
+    </p>
+}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+
+<script>
+    $(document).ready( function () {
+        let table = new DataTable('#myTable', {
+            responsive: true,      // Hace la tabla adaptable a móviles
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json' // Traducción completa
+        }
+    });
+    } );
+</script>
+
+<table class="table table-striped table-responsive table-hover table-sm" id="myTable">
+        <thead>
+            <tr>
+                <th>Id Rol</th>
+                <th>Nombre Rol</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rol in Model)
+            {
+                <tr>
+                <td>@rol.Id_Rol</td>
+                <td>@rol.Nombre_Rol</td>
+                @* <td>@(rol.Activo ? "Sí" : "No")</td> *@
+                <td>
+                    <div class="row">
+                        <div class="col-6 text-center">
+                            <a class="btn btn-detalles" data-bs-toggle='tooltip' data-bs-placement='top' title='Rol de Usuario' asp-controller="Usuarios" asp-action="roles" asp-route-Id_Usuario="@rol.Id_Rol">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </div>
+                    </div>
+                </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+
+
+
+

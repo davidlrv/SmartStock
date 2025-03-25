@@ -127,7 +127,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                             <li><a class="dropdown-item" href="/Usuarios/Usuarios"> <i class="bi bi-person-fill-gear"></i> Gestion de Usuarios</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i>  Roles </a></li>
+                            <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="ListaRoles"><i class="bi bi-gear"></i>  Roles </a></li>
                             <li><a class="dropdown-item" asp-controller="Usuarios" asp-action="Perfil" asp-route-Id_Usuario="@User.FindFirst("Id_Usuario")?.Value"> <i class="bi bi-person-check"></i> Mi Perfil</a></li>
                             <li>
                                 <hr class="dropdown-divider">

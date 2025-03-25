@@ -264,5 +264,25 @@ namespace SmartStock.Controllers
                 return Json(new { success = false });
             }
         }
+
+       // [Authorize(Roles = "Super Administrador, Administrador")]
+        public async Task<IActionResult> ListaRoles()
+        {
+            var parametro = "{\"Activo\": \"1\"}";
+            var rol = await _apiService.Run("sp_Mostrar_Roles", parametro);
+
+            if (rol.Contains("Data is Null"))
+            {
+                return View();
+            }
+            else
+            {
+                ResponseDataRol? _Roles = JsonConvert.DeserializeObject<ResponseDataRol>(rol.ToString());
+                return View(_Roles.DATA);
+            }
+
+        }
+
+
     }
 }

@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Roles";
+    Layout = "~/Views/Shared/_LayoutB.cshtml";
+}
+@model Usuarios
+
+<section class="container-fluid" style="position:relative">
+        <h1>Roles de Usuario</h1>
+
+        <h4>Se gestionan los Roles de usuarios</h4>
+        <hr class="m-3">
+        <div class="row pb-3">
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header text-center p-3 header-back">
+                                <h3>Roles</h3>
+                            </div>
+                            <div class="card-body p-3">
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Oculta todos los mensajes de validación al cargar la página
+        document.querySelectorAll("span.text-danger").forEach(function (span) {
+            span.style.display = "none";
+        });
+    });
+
+
+
+    function validateForm() {
+
+        const requiredFields = document.querySelectorAll('#myForm input[required]');
+        let firstMissingField = null;
+
+        for (let field of requiredFields) {
+            if (!field.value || !field.checkValidity()) {
+                if (!firstMissingField) {
+                    firstMissingField = field;
+                }
+            }
+        }
+
+        if (firstMissingField) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Advertencia',
+                text: 'Algunos campos faltan rellenar o están mal. ' + firstMissingField.name,
+                confirmButtonText: "Ok"
+            }).then(() => {
+                firstMissingField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Verifica si el campo está en la vista y entonces enfoca
+                setTimeout(() => {
+                    firstMissingField.focus();
+                    $(firstMissingField).next('span.text-danger').show();
+                    $('#mensaje').hide();
+                }, 500); // Ajusta el tiempo si es necesario
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function Guardar() {
+        event.preventDefault();
+        if (validateForm()) {
+            document.getElementById('btnAcceder2').click();
+        }
+    }
+
+
+</script>
