@@ -13,6 +13,9 @@ namespace SmartStock.Models
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         public string Nombre_Rol { get; set; }
 
+        public bool Estado { get; set; } = true;
+
+        public int? Id_Usuario { get; set; }
     }
 
     public class ResponseDataRol

@@ -140,7 +140,7 @@ namespace SmartStock.Controllers
         [Authorize]
         public async Task<IActionResult> GuardarPerfil(Usuarios model)
         {
-                 model.Patron = _configuration["ConfigLogin:Patron"];
+                model.Patron = _configuration["ConfigLogin:Patron"];
 
                 var user = await _apiService.Run("sp_Guardar_Usuario", model);
 
@@ -268,7 +268,7 @@ namespace SmartStock.Controllers
        // [Authorize(Roles = "Super Administrador, Administrador")]
         public async Task<IActionResult> ListaRoles()
         {
-            var parametro = "{\"Activo\": \"1\"}";
+            var parametro = "{\"Estado\": \"1\"}";
             var rol = await _apiService.Run("sp_Mostrar_Roles", parametro);
 
             if (rol.Contains("Data is Null"))
@@ -278,7 +278,62 @@ namespace SmartStock.Controllers
             else
             {
                 ResponseDataRol? _Roles = JsonConvert.DeserializeObject<ResponseDataRol>(rol.ToString());
-                return View(_Roles.DATA);
+                return View(_Roles?.DATA);
+            }
+
+        }
+
+
+        public async Task<IActionResult> Roles(Roles model)
+        {
+            if (model.Id_Rol == null) {
+                model.Estado = true;
+                return View(model); // Retorna la vista Perfil sin datos
+            }
+            var rol = await _apiService.Run("sp_Mostrar_Roles", model);
+
+            if (rol.Contains("Data is Null"))
+            {
+                model.Estado = true;
+                return View(model); // Retorna la vista Perfil sin datos
+            }
+            else
+            {
+                ResponseDataRol? _rol = JsonConvert.DeserializeObject<ResponseDataRol>(rol.ToString());
+                model = _rol.DATA[0];
+                ModelState.ClearValidationState(nameof(model.Nombre_Rol));
+                ModelState.ClearValidationState(nameof(model.Estado));
+                TryValidateModel(model);
+                if (!ModelState.IsValid)
+                {
+                    // Manejar el estado no válido del modelo si es necesario
+                    return View(model);
+                }
+                else
+                    return View(model); // Retorna la vista Perfil con los datos del usuario
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GuardarRoles(Roles model)
+        {
+           
+            var rol = await _apiService.Run("sp_Guardar_Rol", model);
+
+            if (rol.Contains("Data is Null") || rol.Contains("ErrorMessage"))
+            {
+                // Si hay un error, podrías enviar un mensaje de error a la vista, si lo deseas.
+                TempData["Message"] = "Hubo un error al guardar el Rol. Por favor, intenta de nuevo.";
+                TempData["MessageType"] = "success"; // Puedes utilizar esto para determinar el tipo de mensaje en la vista.
+                return RedirectToAction("Roles", new { Id_Rol = model.Id_Rol });
+            }
+            else
+            {
+                // Guardado exitoso, pasamos un mensaje de éxito a la vista.
+                TempData["Message"] = "El perfil se guardo correctamente.";
+                TempData["MessageType"] = "success"; // Esto es opcional, pero puede ser útil para definir el estilo del mensaje.
+                ResponseDataRol? _rol = JsonConvert.DeserializeObject<ResponseDataRol>(rol.ToString());
+                return RedirectToAction("Roles", new { Id_Rol = _rol?.DATA[0].Id_Rol });
             }
 
         }

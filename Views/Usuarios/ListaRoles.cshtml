@@ -11,7 +11,7 @@
 @*Solamente Super Administrador puede agregar nuevos usuarios*@
     @if (User.IsInRole("Super Administrador")){
     <p class="mb-0 d-flex">
-    <a class="btn btn-success" asp-area="" asp-controller="Usuarios" asp-action="ListaRoles">Agregar Rol de Usuario</a>
+    <a class="btn btn-success" asp-area="" asp-controller="Usuarios" asp-action="Roles">Agregar Rol de Usuario</a>
     </p>
 }
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -33,6 +33,8 @@
             <tr>
                 <th>Id Rol</th>
                 <th>Nombre Rol</th>
+                <th>Activo</th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
@@ -41,11 +43,11 @@
                 <tr>
                 <td>@rol.Id_Rol</td>
                 <td>@rol.Nombre_Rol</td>
-                @* <td>@(rol.Activo ? "Sí" : "No")</td> *@
+                <td>@(rol.Estado ? "Sí" : "No")</td>
                 <td>
                     <div class="row">
                         <div class="col-6 text-center">
-                            <a class="btn btn-detalles" data-bs-toggle='tooltip' data-bs-placement='top' title='Rol de Usuario' asp-controller="Usuarios" asp-action="roles" asp-route-Id_Usuario="@rol.Id_Rol">
+                            <a class="btn btn-detalles" data-bs-toggle='tooltip' data-bs-placement='top' title='Rol de Usuario' asp-controller="Usuarios" asp-action="roles" asp-route-Id_Rol="@rol.Id_Rol">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                         </div>

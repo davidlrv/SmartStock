@@ -2,7 +2,7 @@
     ViewData["Title"] = "Roles";
     Layout = "~/Views/Shared/_LayoutB.cshtml";
 }
-@model Usuarios
+@model Roles
 
 <section class="container-fluid" style="position:relative">
         <h1>Roles de Usuario</h1>
@@ -18,6 +18,87 @@
                                 <h3>Roles</h3>
                             </div>
                             <div class="card-body p-3">
+
+                            @if (TempData["Message"] != null)
+                            {
+                                <div class="alert alert-@TempData["MessageType"]" id="mensaje">
+                                    @TempData["Message"]
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            Swal.fire({
+                                                icon: "info",
+                                                text: document.getElementById("tempDataMessage").value,
+                                                showConfirmButton: true,
+                                                confirmButtonColor: "#bb2d3b",
+                                                timer: 1500
+                                            });
+                                        });
+
+                                    </script>
+                                </div>
+                            }
+
+                            <form asp-controller="Usuarios" asp-action="GuardarRoles" method="post" id="myForm">
+
+                                <div class="row g-3">
+                                    @{
+                                        var esSoloLectura = (User.IsInRole("Recepcion") || User.IsInRole("Administrador"));
+                                    }
+
+                                    <!-- Nombre Usuario -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Nombre_Rol" class="control-label"></label>
+                                        <input asp-for="Nombre_Rol" class="form-control" required />
+                                        <span asp-validation-for="Nombre_Rol" class="text-danger"></span>
+                                    </div>
+
+
+                                    @*Activo*@
+                                    <div class="col-md-12">
+                                        <div class="form-check form-switch">
+                                            <input asp-for="Estado" class="form-check-input" type="checkbox" id="activo">
+                                            <label class="form-check-label" for="Estado">Estado</label>
+                                            <span asp-validation-for="Estado" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                  
+
+                                    <!--Pasar usuario de manera oculta con un valor predeterminado-->
+                                    <input asp-for="Id_Usuario" type="hidden" />
+                                    <input asp-for="Id_Rol" type="hidden" />
+
+
+                                </div>
+
+                                <div class="mt-4 d-flex gap-2">
+
+                                    <button id="btnAcceder1" type="button" class="btn btn-success" onclick="Guardar()">Guardar</button>
+                                    <button type="submit" id="btnAcceder2" style="display:none;">Guardar</button>
+                                    @if (User.IsInRole("Super Administrador") || User.IsInRole("Administrador"))
+                                    {
+                                        <a id="ES" class="btn btn-outline-success" href="/Usuarios/ListaRoles">Regresar al Listado</a>
+
+                                    }
+
+                                </div>
+
+                                @if (esSoloLectura)
+                                {
+                                    <script>
+                                        document.getElementById('activo').addEventListener('click', function (e) {
+                                            e.preventDefault(); // Evita que se cambie el estado del checkbox
+                                        });
+
+                                    </script>
+                                }
+
+                            </form>
+
+
+
+
 
                                
                             </div>
