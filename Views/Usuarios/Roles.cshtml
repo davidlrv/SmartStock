@@ -66,7 +66,7 @@
                                   
 
                                     <!--Pasar usuario de manera oculta con un valor predeterminado-->
-                                    <input asp-for="Id_Usuario" type="hidden" />
+                                    <input asp-for="Usuario" type="hidden" value="@User.Identity.Name" />
                                     <input asp-for="Id_Rol" type="hidden" />
 
 

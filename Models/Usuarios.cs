@@ -32,6 +32,7 @@ namespace SmartStock.Models
         public int? Id_Usuario { get; set; }
 
         public string? Patron { get; set; }
+        public string? UsuarioGuarda { get; set; }
 
         public string? recaptchaResponse { get; set; }
 

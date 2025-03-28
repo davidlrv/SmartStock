@@ -4,6 +4,32 @@
 }
 @model Usuarios
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/Usuarios/GetRoles')  // Ruta de la API
+            .then(response => response.json())
+            .then(data => {
+                let select = document.getElementById("rol");
+                select.innerHTML = '<option value="">Seleccione un rol</option>'; // Limpiar y agregar opción inicial
+
+                data.forEach(rol => {
+                    let option = document.createElement("option");
+                    option.value = rol.nombre_Rol; // Usar el nombre como valor
+                    option.textContent = rol.nombre_Rol;
+                    select.appendChild(option);
+                });
+
+                // Establecer el valor seleccionado por defecto desde el modelo
+                let selectedValue = '@Model.Nombre_Rol'; // Obtén el valor del modelo
+                if (selectedValue) {
+                    select.value = selectedValue; // Asigna el valor al select
+                }
+            })
+            .catch(error => console.error("Error cargando roles:", error));
+    });
+</script>
+
+
 <section class="container-fluid" style="position:relative">
         <h1>Perfil de Usuario</h1>
 
@@ -88,22 +114,20 @@
                                        
                                         <!-- Rol -->
                                         <div class="col-md-6">
-                                            <label asp-for="Nombre_Rol" class="control-label"></label>
+                                        <label asp-for="Nombre_Rol" class="control-label">Nombre Rol</label>
                                             @if (esSoloLectura)
                                             {
                                                 <select asp-for="Nombre_Rol" class="form-control custom-select-arrow" id="rol" required readonly style="pointer-events: none;">
-                                                    <option value="Administrador">Administrador</option>
-                                                    <option value="Recepcion">Recepcion</option>
-                                                    <option value="Super Administrador">Super Administrador</option>
+                                                   
                                                 </select>
                                              } 
                                              else{
                                                      <select asp-for="Nombre_Rol" class="form-control custom-select-arrow" id="rol" required>
-                                                        <option value="Administrador">Administrador</option>
-                                                        <option value="Recepcion">Recepcion</option>
-                                                        <option value="Super Administrador">Super Administrador</option>
+                                                       
                                                     </select>
                                                }
+
+                                   
                                                
                                             <span asp-validation-for="Nombre_Rol" class="text-danger"></span>
                                         </div>
@@ -133,7 +157,8 @@
                                         </div>
 
                                         <!--Pasar usuario de manera oculta con un valor predeterminado-->
-                                        <input asp-for="Id_Usuario" type="hidden" />
+                                    <input asp-for="Id_Usuario" type="hidden" />
+                                    <input asp-for="UsuarioGuarda" type="hidden" value="@User.Identity.Name" />
                                     
                                        
                                     </div>

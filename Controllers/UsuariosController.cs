@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartStock.Models;
 using SmartStock.Service;
+using System.Data;
 
 namespace SmartStock.Controllers
 {
@@ -283,6 +284,29 @@ namespace SmartStock.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRoles()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var rol = await _apiService.Run("sp_Mostrar_Roles", parametro);
+
+            if (string.IsNullOrEmpty(rol) || rol.Contains("Data is Null"))
+            {
+                return Ok(new List<object>()); // Devuelve una lista vacía en caso de error
+            }
+
+            try
+            {
+                ResponseDataRol? _Roles = JsonConvert.DeserializeObject<ResponseDataRol>(rol);
+                return Ok(_Roles?.DATA);
+            }
+            catch (JsonException ex)
+            {
+                return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
+
+
 
         public async Task<IActionResult> Roles(Roles model)
         {
@@ -330,7 +354,7 @@ namespace SmartStock.Controllers
             else
             {
                 // Guardado exitoso, pasamos un mensaje de éxito a la vista.
-                TempData["Message"] = "El perfil se guardo correctamente.";
+                TempData["Message"] = "El Rol se guardo correctamente.";
                 TempData["MessageType"] = "success"; // Esto es opcional, pero puede ser útil para definir el estilo del mensaje.
                 ResponseDataRol? _rol = JsonConvert.DeserializeObject<ResponseDataRol>(rol.ToString());
                 return RedirectToAction("Roles", new { Id_Rol = _rol?.DATA[0].Id_Rol });

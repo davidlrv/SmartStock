@@ -15,7 +15,7 @@ namespace SmartStock.Models
 
         public bool Estado { get; set; } = true;
 
-        public int? Id_Usuario { get; set; }
+        public string? Usuario { get; set; }
     }
 
     public class ResponseDataRol
