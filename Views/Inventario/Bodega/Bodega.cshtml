@@ -1,6 +1,190 @@
 ﻿@{
-    ViewData["Title"] = "Lista de Roles";
+    ViewData["Title"] = "Bodega";
     Layout = "~/Views/Shared/_LayoutB.cshtml";
 }
+@model Bodega
 
-<h3 class="mb-4">Bodega</h3>
+<section class="container-fluid" style="position:relative">
+    <h1>Bodega</h1>
+
+    <h4>Se gestionan las Bodegas</h4>
+    <hr class="m-3">
+    <div class="row pb-3">
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header text-center p-3 header-back">
+                            <h3>Bodega</h3>
+                        </div>
+                        <div class="card-body p-3">
+
+                            @if (TempData["Message"] != null)
+                            {
+                                <div class="alert alert-@TempData["MessageType"]" id="mensaje">
+                                    @TempData["Message"]
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            Swal.fire({
+                                                icon: "info",
+                                                text: document.getElementById("tempDataMessage").value,
+                                                showConfirmButton: true,
+                                                confirmButtonColor: "#bb2d3b",
+                                                timer: 1500
+                                            });
+                                        });
+
+                                    </script>
+                                </div>
+                            }
+
+                            <form asp-controller="Inventario" asp-action="GuardarBodega" method="post" id="myForm">
+
+                                <div class="row g-3">
+                                    @{
+                                        var esSoloLectura = (User.IsInRole("Recepcion") || User.IsInRole("Administrador"));
+                                    }
+
+                                    <!-- Codigo -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Cod_Bodega" class="control-label"></label>
+                                        <input asp-for="Cod_Bodega" class="form-control" required />
+                                        <span asp-validation-for="Cod_Bodega" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Nombre Bodega -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Nombre" class="control-label"></label>
+                                        <input asp-for="Nombre" class="form-control" required />
+                                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Direccion -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Direccion" class="control-label"></label>
+                                        <input asp-for="Direccion" class="form-control" required />
+                                        <span asp-validation-for="Direccion" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Telefono -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Telefono" class="control-label"></label>
+                                        <input asp-for="Telefono" class="form-control" required />
+                                        <span asp-validation-for="Telefono" class="text-danger"></span>
+                                    </div>
+
+                                    @*Activo*@
+                                    <div class="col-md-12">
+                                        <div class="form-check form-switch">
+                                            <input asp-for="Estado" class="form-check-input" type="checkbox" id="activo">
+                                            <label class="form-check-label" for="Estado">Estado</label>
+                                            <span asp-validation-for="Estado" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+
+
+                                    <!--Pasar usuario de manera oculta con un valor predeterminado-->
+                                    <input asp-for="Usuario" type="hidden" value="@User.Identity.Name" />
+                                    <input asp-for="ID_Bodega" type="hidden" />
+
+
+                                </div>
+
+                                <div class="mt-4 d-flex gap-2">
+
+                                    <button id="btnAcceder1" type="button" class="btn btn-success" onclick="Guardar()">Guardar</button>
+                                    <button type="submit" id="btnAcceder2" style="display:none;">Guardar</button>
+                                    @if (User.IsInRole("Super Administrador") || User.IsInRole("Administrador"))
+                                    {
+                                        <a id="ES" class="btn btn-outline-success" href="/Inventario/ListaBodega">Regresar al Listado</a>
+
+                                    }
+
+                                </div>
+
+                                @if (esSoloLectura)
+                                {
+                                    <script>
+                                        document.getElementById('activo').addEventListener('click', function (e) {
+                                            e.preventDefault(); // Evita que se cambie el estado del checkbox
+                                        });
+
+                                    </script>
+                                }
+
+                            </form>
+
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Oculta todos los mensajes de validación al cargar la página
+        document.querySelectorAll("span.text-danger").forEach(function (span) {
+            span.style.display = "none";
+        });
+    });
+
+
+
+    function validateForm() {
+
+        const requiredFields = document.querySelectorAll('#myForm input[required]');
+        let firstMissingField = null;
+
+        for (let field of requiredFields) {
+            if (!field.value || !field.checkValidity()) {
+                if (!firstMissingField) {
+                    firstMissingField = field;
+                }
+            }
+        }
+
+        if (firstMissingField) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Advertencia',
+                text: 'Algunos campos faltan rellenar o están mal. ' + firstMissingField.name,
+                confirmButtonText: "Ok"
+            }).then(() => {
+                firstMissingField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Verifica si el campo está en la vista y entonces enfoca
+                setTimeout(() => {
+                    firstMissingField.focus();
+                    $(firstMissingField).next('span.text-danger').show();
+                    $('#mensaje').hide();
+                }, 500); // Ajusta el tiempo si es necesario
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function Guardar() {
+        event.preventDefault();
+        if (validateForm()) {
+            document.getElementById('btnAcceder2').click();
+        }
+    }
+
+
+</script>
