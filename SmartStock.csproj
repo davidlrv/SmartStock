@@ -14,7 +14,6 @@
     <Folder Include="Views\Inicio\" />
     <Folder Include="Views\Compras\" />
     <Folder Include="Views\Configuraciones\" />
-    <Folder Include="Views\Ventas\" />
   </ItemGroup>
 
 </Project>
