@@ -23,9 +23,11 @@
         let table = new DataTable('#myTable', {
             responsive: true,      // Hace la tabla adaptable a móviles
         language: {
-           url: '/js/es-ES.json'
+           url: '/js/es-ES.json',
+           emptyTable: "No hay cajas disponibles."
         }
     });
+
     } );
 </script>
 
@@ -33,44 +35,37 @@
     <thead>
         <tr>
             <th>Id Caja</th>
-            <th>Usuario apertura</th>
-            <th>Usuario cierre</th>
+            <th>Nombre Caja</th>
             <th>Codigo caja</th>
-            <th>Fecha Apertura</th>
-            <th>Fecha Cierre</th>
-            <th>Monto apertura</th>
-            <th>Ingresos</th>
-            <th>Devoluciones</th>
             <th>Activo</th>
             <th>Opciones</th>
 
         </tr>
     </thead>
     <tbody>
-        @foreach (var caja in Model)
+        @if (Model != null && Model.Any())
         {
-            <tr>
-                <td>@caja.ID_Caja</td>
-                <td>@caja.Usuario_Apertura</td>
-                <td>@caja.Usuario_Cierre</td>
-                <td>@caja.Cod_Caja</td>
-                <td>@caja.Fecha_Apertura</td>
-                <td>@caja.Fecha_Cierre</td>
-                <td>@caja.Monto_Apertura</td>
-                <td>@caja.Ingresos</td>
-                <td>@caja.Devoluciones</td>
-                <td>@(caja.Estado ? "Sí" : "No")</td>
-                <td>
-                    <div class="row">
-                        <div class="col-6 text-center">
-                            <a class="btn btn-detalles" data-bs-toggle='tooltip' data-bs-placement='top' title='Caja' asp-controller="Caja" asp-action="Caja" asp-route-ID_Bodega="@caja.ID_Caja">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
+            foreach (var caja in Model)
+            {
+                <tr>
+                    <td>@caja.ID_Caja</td>
+                    <td>@caja.NombreCaja</td>
+                    <td>@caja.Cod_Caja</td>
+                    <td>@(caja.Estado ? "Sí" : "No")</td>
+                    <td>
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <a class="btn btn-detalles" data-bs-toggle='tooltip' data-bs-placement='top' title='Caja' asp-controller="Caja" asp-action="Caja" asp-route-ID_Bodega="@caja.ID_Caja">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            }
         }
+       
     </tbody>
+
 </table>
 
