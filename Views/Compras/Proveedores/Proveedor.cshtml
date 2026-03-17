@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Proveedor";
+    Layout = "~/Views/Shared/_LayoutB.cshtml";
+}
+@model Proveedor
+
+<section class="container-fluid" style="position:relative">
+    <h1>Proveedor</h1>
+
+    <h4>Se gestionan los Proveedores</h4>
+    <hr class="m-3">
+
+    <div class="row pb-3">
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+
+                    <div class="card">
+
+                        <div class="card-header text-center p-3 header-back">
+                            <h3>Proveedor</h3>
+                        </div>
+
+                        <div class="card-body p-3">
+
+                            @if (TempData["Message"] != null)
+                            {
+                                <div class="alert alert-@TempData["MessageType"]" id="mensaje">
+                                    @TempData["Message"]
+                                </div>
+                            }
+
+                            <form asp-controller="Compra" asp-action="GuardarProveedor" method="post" id="myForm">
+
+                                <div class="row g-3">
+
+                                    @{
+                                        var esSoloLectura = (User.IsInRole("Recepcion"));
+                                    }
+
+                                    <!-- Tipo Proveedor -->
+                                    <div class="col-md-6">
+                                        <label asp-for="ID_Tipo" class="control-label">Tipo</label>
+                                        <input asp-for="ID_Tipo" class="form-control" required />
+                                        <span asp-validation-for="ID_Tipo" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Nombre -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Nombre" class="control-label"></label>
+                                        <input asp-for="Nombre" class="form-control" required />
+                                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Email" class="control-label"></label>
+                                        <input asp-for="Email" type="email" class="form-control" required />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Telefono -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Telefono" class="control-label"></label>
+                                        <input asp-for="Telefono" class="form-control" required />
+                                        <span asp-validation-for="Telefono" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Nombre Contacto -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Nombre_Contacto" class="control-label"></label>
+                                        <input asp-for="Nombre_Contacto" class="form-control" required />
+                                        <span asp-validation-for="Nombre_Contacto" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Numero Contacto -->
+                                    <div class="col-md-6">
+                                        <label asp-for="Numero_Contacto" class="control-label"></label>
+                                        <input asp-for="Numero_Contacto" class="form-control" required />
+                                        <span asp-validation-for="Numero_Contacto" class="text-danger"></span>
+                                    </div>
+
+                                    <!-- Estado -->
+                                    <div class="col-md-12">
+                                        <div class="form-check form-switch">
+                                            <input asp-for="Estado" class="form-check-input" type="checkbox" id="activo">
+                                            <label class="form-check-label" for="Estado">Estado</label>
+                                            <span asp-validation-for="Estado" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos ocultos -->
+                                    <input asp-for="ID_Proveedores" type="hidden" />
+                                    <input asp-for="Usuario_Insercion" type="hidden" value="@User.Identity.Name" />
+                                    <input asp-for="Fecha_Insercion" type="hidden" value="@DateTime.Now" />
+
+                                </div>
+
+                                <div class="mt-4 d-flex gap-2">
+
+                                    <button id="btnAcceder1" type="button" class="btn btn-success" onclick="Guardar()">Guardar</button>
+
+                                    <button type="submit" id="btnAcceder2" style="display:none;">
+                                        Guardar
+                                    </button>
+
+                                    @if (User.IsInRole("Super Administrador") || User.IsInRole("Administrador"))
+                                    {
+                                        <a class="btn btn-outline-success" href="/Compra/ListaProveedor">
+                                            Regresar al Listado
+                                        </a>
+                                    }
+
+                                </div>
+
+                                @if (esSoloLectura)
+                                {
+                                    <script>
+                                                                        document.getElementById('activo').addEventListener('click', function (e) {
+                                                                            e.preventDefault();
+                                                                        });
+                                    </script>
+                                }
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll("span.text-danger").forEach(function (span) {
+            span.style.display = "none";
+        });
+
+    });
+
+    function validateForm() {
+
+        const requiredFields = document.querySelectorAll('#myForm input[required]');
+        let firstMissingField = null;
+
+        for (let field of requiredFields) {
+            if (!field.value || !field.checkValidity()) {
+                if (!firstMissingField) {
+                    firstMissingField = field;
+                }
+            }
+        }
+
+        if (firstMissingField) {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Advertencia',
+                text: 'Algunos campos faltan rellenar o están mal. ' + firstMissingField.name,
+                confirmButtonText: "Ok"
+            }).then(() => {
+
+                firstMissingField.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                setTimeout(() => {
+
+                    firstMissingField.focus();
+                    $(firstMissingField).next('span.text-danger').show();
+                    $('#mensaje').hide();
+
+                }, 500);
+
+            });
+
+            return false;
+        }
+
+        return true;
+    }
+
+    function Guardar() {
+
+        event.preventDefault();
+
+        if (validateForm()) {
+            document.getElementById('btnAcceder2').click();
+        }
+
+    }
+
+</script>

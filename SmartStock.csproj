@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Views\Inicio\" />
-    <Folder Include="Views\Compras\" />
     <Folder Include="Views\Configuraciones\" />
   </ItemGroup>
 

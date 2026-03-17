@@ -138,24 +138,6 @@ namespace SmartStock.Controllers
         [Authorize]
         public async Task<IActionResult> GuardarCategorias(CategoriaProductos model)
         {
-
-            //var bodega = await _apiService.Run("sp_Guardar_Bodega", model);
-
-            //if (bodega.Contains("Data is Null") || bodega.Contains("ErrorMessage"))
-            //{
-            //    // Si hay un error, podrías enviar un mensaje de error a la vista, si lo deseas.
-            //    TempData["Message"] = "Hubo un error al guardar la bodega. Por favor, intenta de nuevo.";
-            //    TempData["MessageType"] = "success"; // Puedes utilizar esto para determinar el tipo de mensaje en la vista.
-            //    return RedirectToAction("Bodega", new { ID_Bodega = model.ID_Bodega });
-            //}
-            //else
-            //{
-            //    // Guardado exitoso, pasamos un mensaje de éxito a la vista.
-            //    TempData["Message"] = "La Bodega se guardo correctamente.";
-            //    TempData["MessageType"] = "success"; // Esto es opcional, pero puede ser útil para definir el estilo del mensaje.
-            //    ResponseDataBodega? _bodega = JsonConvert.DeserializeObject<ResponseDataBodega>(bodega.ToString());
-            //    return RedirectToAction("Bodega", new { ID_Bodega = _bodega?.DATA[0].ID_Bodega });
-            //}
             var categoria = await _apiService.Run("sp_Guardar_Categoria_Productos", model);
 
             if (categoria.Contains("Data is Null") || categoria.Contains("ErrorMessage"))
@@ -175,7 +157,6 @@ namespace SmartStock.Controllers
                 return RedirectToAction("Categorias", new { ID_Categoria = _categoria?.DATA[0].ID_Categoria });
             }
         }
-
 
 
 

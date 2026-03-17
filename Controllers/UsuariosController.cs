@@ -307,7 +307,6 @@ namespace SmartStock.Controllers
         }
 
 
-
         public async Task<IActionResult> Roles(Roles model)
         {
             if (model.Id_Rol == null) {
