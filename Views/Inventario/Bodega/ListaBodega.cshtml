@@ -15,7 +15,6 @@
         <a class="btn btn-success" asp-area="" asp-controller="Inventario" asp-action="Bodega">Agregar Bodega</a>
     </p>
 }
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 
 <script>
@@ -23,7 +22,8 @@
         let table = new DataTable('#myTable', {
             responsive: true,      // Hace la tabla adaptable a móviles
         language: {
-           url: '/js/es-ES.json'
+           url: '/js/es-ES.json',
+           emptyTable: "No hay cajas disponibles."
         }
     });
     } );
