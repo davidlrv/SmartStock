@@ -4,6 +4,31 @@
 }
 @model Proveedor
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/Compra/GetTipos')  // Ruta de la API
+            .then(response => response.json())
+            .then(data => {
+                let select = document.getElementById("tipo");
+                select.innerHTML = '<option value="">Seleccione un tipo</option>'; // Limpiar y agregar opción inicial
+
+                data.forEach(tipo => {
+                    let option = document.createElement("option");
+                    option.value = tipo.nombre_Tipo; // Usar el nombre como valor
+                    option.textContent = tipo.nombre_Tipo;
+                    select.appendChild(option);
+                });
+
+                // Establecer el valor seleccionado por defecto desde el modelo
+                let selectedValue = '@Model.Nombre_Tipo';
+                if (selectedValue) {
+                    select.value = selectedValue;
+                }
+            })
+            .catch(error => console.error("Error cargando tipos:", error));
+    });
+</script>
+
 <section class="container-fluid" style="position:relative">
     <h1>Proveedor</h1>
 
@@ -40,9 +65,10 @@
 
                                     <!-- Tipo Proveedor -->
                                     <div class="col-md-6">
-                                        <label asp-for="ID_Tipo" class="control-label">Tipo</label>
-                                        <input asp-for="ID_Tipo" class="form-control" required />
-                                        <span asp-validation-for="ID_Tipo" class="text-danger"></span>
+                                        <label asp-for="Nombre_Tipo" class="control-label">Tipo Proveedor</label>
+                                        <select asp-for="Nombre_Tipo" class="form-control custom-select-arrow" id="tipo" required>
+                                        </select>
+                                        <span asp-validation-for="Nombre_Tipo" class="text-danger"></span>
                                     </div>
 
                                     <!-- Nombre -->

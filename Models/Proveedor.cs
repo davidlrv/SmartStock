@@ -10,7 +10,7 @@ namespace SmartStock.Models
     public class Proveedor
     {
         public int? ID_Proveedores { get; set; }
-        public int? ID_Tipo { get; set; }
+        public string Nombre_Tipo { get; set; }
 
         public string Nombre { get; set; }
         public string Email { get; set; }

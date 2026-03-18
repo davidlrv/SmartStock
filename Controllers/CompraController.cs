@@ -96,5 +96,27 @@ namespace SmartStock.Controllers
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetTipos()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var tipo = await _apiService.Run("sp_Mostrar_Tipos", parametro);
+
+            if (string.IsNullOrEmpty(tipo) || tipo.Contains("Data is Null"))
+            {
+                return Ok(new List<object>()); // Devuelve lista vacía si hay error
+            }
+
+            try
+            {
+                ResponseDataTipo? _Tipos = JsonConvert.DeserializeObject<ResponseDataTipo>(tipo);
+                return Ok(_Tipos?.DATA);
+            }
+            catch (JsonException)
+            {
+                return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
     }
 }
