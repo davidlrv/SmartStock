@@ -96,6 +96,12 @@ namespace SmartStock.Controllers
             }
         }
 
+        [Authorize]
+        public async Task<IActionResult> Ajustes()
+        {
+            return View("~/Views/Compras/Ajustes.cshtml");
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetTipos()
