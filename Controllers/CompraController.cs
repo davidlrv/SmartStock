@@ -40,7 +40,6 @@ namespace SmartStock.Controllers
             if (model.ID_Proveedores == null)
             {
                 model.Estado = true;
-
                 return View("~/Views/Compras/Proveedores/Proveedor.cshtml", model);
             }
 
@@ -49,13 +48,11 @@ namespace SmartStock.Controllers
             if (proveedores.Contains("Data is Null"))
             {
                 model.Estado = true;
-
                 return View("~/Views/Compras/Proveedores/Proveedor.cshtml", model);
             }
             else
             {
-                ResponseDataProveedor? _proveedores =
-                    JsonConvert.DeserializeObject<ResponseDataProveedor>(proveedores.ToString());
+                ResponseDataProveedor? _proveedores = JsonConvert.DeserializeObject<ResponseDataProveedor>(proveedores.ToString());
 
                 model = _proveedores.DATA[0];
 
@@ -122,6 +119,82 @@ namespace SmartStock.Controllers
             catch (JsonException)
             {
                 return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ListaTipos()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var tipos = await _apiService.Run("sp_Mostrar_Tipos", parametro);
+
+            if (tipos.Contains("Data is Null"))
+            {
+                return View("~/Views/Compras/TipoProveedor/ListaTipos.cshtml");
+            }
+            else
+            {
+                ResponseDataTipo? _tipos = JsonConvert.DeserializeObject<ResponseDataTipo>(tipos.ToString());
+                return View("~/Views/Compras/TipoProveedor/ListaTipos.cshtml", _tipos?.DATA);
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Tipo(Tipo model)
+        {
+            if (model.ID_Tipo == null)
+            {
+                model.Estado = true;
+                return View("~/Views/Compras/TipoProveedor/Tipo.cshtml", model);
+            }
+
+            var tipos = await _apiService.Run("sp_Mostrar_Tipos", model);
+
+            if (tipos.Contains("Data is Null"))
+            {
+                model.Estado = true;
+                return View("~/Views/Compras/TipoProveedor/Tipo.cshtml", model);
+            }
+            else
+            {
+                ResponseDataTipo? _tipos = JsonConvert.DeserializeObject<ResponseDataTipo>(tipos.ToString());
+
+                model = _tipos.DATA[0];
+
+                TryValidateModel(model);
+
+                if (!ModelState.IsValid)
+                {
+                    return View("~/Views/Compras/TipoProveedor/Tipo.cshtml", model);
+                }
+                else
+                {
+                    return View("~/Views/Compras/TipoProveedor/Tipo.cshtml", model);
+                }
+            }
+        }
+        
+
+        [Authorize]
+        public async Task<IActionResult> GuardarTipo(Tipo model)
+        {
+            var tipo = await _apiService.Run("sp_Guardar_Tipo", model);
+
+            if (tipo.Contains("Data is Null") || tipo.Contains("ErrorMessage"))
+            {
+                TempData["Message"] = "Hubo un error al guardar el Tipo. Por favor, intenta de nuevo.";
+                TempData["MessageType"] = "danger";
+
+                return RedirectToAction("Tipo", new { ID_Tipo = model.ID_Tipo });
+            }
+            else
+            {
+                TempData["Message"] = "El Tipo se guardó correctamente.";
+                TempData["MessageType"] = "success";
+
+                ResponseDataTipo? _tipo = JsonConvert.DeserializeObject<ResponseDataTipo>(tipo.ToString());
+
+                return RedirectToAction("Tipo", new { ID_Tipo = _tipo?.DATA[0].ID_Tipo });
             }
         }
     }
