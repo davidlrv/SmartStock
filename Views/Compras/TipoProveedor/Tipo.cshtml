@@ -26,15 +26,13 @@
                                     @TempData["Message"]
 
                                     <script>
-                                            document.addEventListener("DOMContentLoaded", function () {
-                                                Swal.fire({
-                                                    icon: "info",
-                                                    text: document.getElementById("tempDataMessage").value,
-                                                    showConfirmButton: true,
-                                                    confirmButtonColor: "#bb2d3b",
-                                                    timer: 1500
+                                                document.addEventListener("DOMContentLoaded", function () {
+                                                    Swal.fire({
+                                                        icon: "success",
+                                                        text: @Html.Raw(Json.Serialize(TempData["Message"])),
+                                                        confirmButtonColor: "#198754"
+                                                    });
                                                 });
-                                            });
                                     </script>
                                 </div>
                             }

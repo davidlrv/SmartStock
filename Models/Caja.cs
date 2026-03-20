@@ -3,7 +3,7 @@
     public class Caja
     {
         public int ID_Caja { get; set; }
-        public int NombreCaja { get; set; }
+        public string NombreCaja { get; set; }
       
         public string Cod_Caja { get; set; }
         

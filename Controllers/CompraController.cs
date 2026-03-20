@@ -197,5 +197,8 @@ namespace SmartStock.Controllers
                 return RedirectToAction("Tipo", new { ID_Tipo = _tipo?.DATA[0].ID_Tipo });
             }
         }
+
+        
+
     }
 }

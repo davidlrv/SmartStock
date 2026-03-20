@@ -53,6 +53,15 @@
                                 <div class="alert alert-@TempData["MessageType"]" id="mensaje">
                                     @TempData["Message"]
                                 </div>
+                                 <script>
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                Swal.fire({
+                                                    icon: "success",
+                                                    text: @Html.Raw(Json.Serialize(TempData["Message"])),
+                                                    confirmButtonColor: "#198754"
+                                                });
+                                            });
+                                  </script>
                             }
 
                             <form asp-controller="Compra" asp-action="GuardarProveedor" method="post" id="myForm">

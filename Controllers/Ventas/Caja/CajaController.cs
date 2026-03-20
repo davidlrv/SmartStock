@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartStock.Models;
 using SmartStock.Service;
@@ -60,6 +61,29 @@ namespace SmartStock.Controllers.Ventas
                     return View("~/Views/Ventas/Caja/Caja.cshtml", model); // Retorna la vista Perfil con los datos del usuario
             }
         }
-       
+
+        [Authorize]
+        public async Task<IActionResult> GuardarCaja(Caja model)
+        {
+            var caja = await _apiService.Run("sp_Guardar_Caja", model);
+
+            if (caja.Contains("Data is Null") || caja.Contains("ErrorMessage"))
+            {
+                TempData["Message"] = "Hubo un error al guardar la Caja. Por favor, intenta de nuevo.";
+                TempData["MessageType"] = "danger";
+
+                return RedirectToAction("Caja", new { ID_Caja = model.ID_Caja });
+            }
+            else
+            {
+                TempData["Message"] = "La Caja se guardó correctamente.";
+                TempData["MessageType"] = "success";
+
+                ResponseDataCaja? _caja = JsonConvert.DeserializeObject<ResponseDataCaja>(caja.ToString());
+
+                return RedirectToAction("Caja", new { ID_Caja = _caja?.DATA[0].ID_Caja });
+            }
+        }
+
     }
 }
