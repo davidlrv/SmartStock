@@ -33,6 +33,7 @@
                         <div class="row">
                             <div class="col-12 text-center mt-4 mb-3">
                                 <button class="btn btn-outline-success" type="submit" onclick="acceder()">Acceder</button>
+
                             </div>
                         </div>
                         <div class="row m-3">
@@ -51,22 +52,54 @@
         <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12"></div>
     </div>
 </div>
+
 <script>
+    // Se ejecuta cuando el usuario hace clic en "Acceder"
+    function acceder() {
+        const usuario = document.getElementById("Usuario").value;
+        const recordame = document.getElementById("idRecordame").checked;
+
+        if (recordame && usuario !== "") {
+            // Guarda el usuario por 30 días
+            const d = new Date();
+            d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = "username_remember=" + usuario + ";" + expires + ";path=/";
+        } else {
+            // Si no está marcado, borramos la cookie
+            document.cookie = "username_remember=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+    }
+
+    // Se ejecuta automáticamente al cargar la página
+    window.onload = function() {
+        const name = "username_remember=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(';');
+        let user = "";
+
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(name) == 0) {
+                user = c.substring(name.length, c.length);
+            }
+        }
+
+        if (user !== "") {
+            document.getElementById("Usuario").value = user;
+            document.getElementById("idRecordame").checked = true;
+        }
+    };
+
     function togglePassword() {
         let passwordInput = document.getElementById("Clave");
         let eyeIcon = document.getElementById("eyeIcon");
-
         if (passwordInput.type === "password") {
             passwordInput.type = "text";
-            eyeIcon.classList.remove("bi-eye");
-            eyeIcon.classList.add("bi-eye-slash");
+            eyeIcon.classList.replace("bi-eye", "bi-eye-slash");
         } else {
             passwordInput.type = "password";
-            eyeIcon.classList.remove("bi-eye-slash");
-            eyeIcon.classList.add("bi-eye");
+            eyeIcon.classList.replace("bi-eye-slash", "bi-eye");
         }
     }
-    function acceder(){
-    }
-
 </script>
