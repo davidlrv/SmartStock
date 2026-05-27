@@ -67,7 +67,7 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#"> <i class="bi bi-gear"></i> Ajustes</a></li>
+                                <li><a class="dropdown-item" asp-controller="Inventario" asp-action="Ajustes"> <i class="bi bi-gear"></i> Ajustes</a></li>
                             </ul>
                         </li>
                         @* Compras *@
@@ -115,7 +115,9 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#"> <i class="bi bi-gear"></i> Consecutivos </a></li>
+                               @*  <li><a class="dropdown-item" href="#"> <i class="bi bi-gear"></i> Consecutivos </a></li> *@
+                                <li><a class="dropdown-item" asp-controller="Configuraciones" asp-action="Opciones"> <i class="bi bi-gear"></i> Opciones </a></li>
+
                             </ul>
                         </li>
 
