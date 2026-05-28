@@ -1,0 +1,99 @@
+﻿
+@model List<SmartStock.Models.UnidadMedida>
+
+@{
+    ViewData["Title"] = "Lista de Unidad de Medida";
+    Layout = "~/Views/Shared/_LayoutB.cshtml";
+}
+
+<h3 class="mb-4">Gestión de Unidades de Medida</h3>
+
+@* Solamente Super Administrador puede agregar nuevas unidades *@
+@if (User.IsInRole("Super Administrador"))
+{
+    <p class="mb-0 d-flex">
+        <a class="btn btn-success"
+           asp-area=""
+           asp-controller="Inventario"
+           asp-action="UnidadMedida">
+
+            Agregar Unidad de Medida
+
+        </a>
+    </p>
+}
+
+<script>
+
+    $(document).ready(function () {
+
+        let table = new DataTable('#myTable', {
+            responsive: true,
+            language: {
+                url: '/js/es-ES.json',
+                emptyTable: "No hay unidades de medida disponibles."
+            }
+        });
+
+    });
+
+</script>
+
+<table class="table table-striped table-responsive table-hover table-sm" id="myTable">
+
+    <thead>
+
+        <tr>
+
+            <th>ID Unidad</th>
+            <th>Nombre Unidad de Medida</th>
+            <th>Activo</th>
+            <th>Opciones</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var unidad in Model)
+        {
+            <tr>
+
+                <td>@unidad.ID_UnidadMedida</td>
+
+                <td>@unidad.Nombre_UnidadMedida</td>
+
+                <td>@(unidad.Estado ? "Sí" : "No")</td>
+
+                <td>
+
+                    <div class="row">
+
+                        <div class="col-6 text-center">
+
+                            <a class="btn btn-detalles"
+                               data-bs-toggle='tooltip'
+                               data-bs-placement='top'
+                               title='Unidad de Medida'
+                               asp-controller="Inventario"
+                               asp-action="UnidadMedida"
+                               asp-route-ID_UnidadMedida="@unidad.ID_UnidadMedida">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
