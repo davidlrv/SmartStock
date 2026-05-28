@@ -103,6 +103,7 @@ namespace SmartStock.Controllers
                 return View("~/Views/Inventario/Categorias/ListaCategorias.cshtml", _categoria?.DATA);
             }
         }
+       
         [Authorize]
         public async Task<IActionResult> Categorias(CategoriaProductos model)
         {
@@ -165,8 +166,88 @@ namespace SmartStock.Controllers
             return View("~/Views/Inventario/Ajustes.cshtml");
         }
 
+        [Authorize]
+        public async Task<IActionResult> ListaUnidadMedida()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var UnidadMedida = await _apiService.Run("sp_Mostrar_UnidadMedida", parametro);
 
+            if (UnidadMedida.Contains("Data is Null"))
+            {
+                return View("~/Views/Inventario/UnidadMedida/ListaUnidadMedida.cshtml");
+            }
+            else
+            {
+                ResponseDataUnidadMedida? _UnidadMedida = JsonConvert.DeserializeObject<ResponseDataUnidadMedida>(UnidadMedida.ToString());
+                return View("~/Views/Inventario/UnidadMedida/ListaUnidadMedida.cshtml", _UnidadMedida?.DATA);
+            }
+        }
 
+        [Authorize]
+        public async Task<IActionResult> UnidadMedida(UnidadMedida model)
+        {
+            if (model.ID_UnidadMedida == null)
+            {
+                model.Estado = true;
+
+                return View("~/Views/Inventario/UnidadMedida/UnidadMedida.cshtml", model);
+            }
+
+            var unidadMedida = await _apiService.Run("sp_Mostrar_UnidadMedida", model);
+
+            if (unidadMedida.Contains("Data is Null"))
+            {
+                model.Estado = true;
+
+                return View("~/Views/Inventario/UnidadMedida/UnidadMedida.cshtml", model);
+            }
+            else
+            {
+                ResponseDataUnidadMedida? _unidadMedida =
+                    JsonConvert.DeserializeObject<ResponseDataUnidadMedida>(unidadMedida.ToString());
+
+                model = _unidadMedida.DATA[0];
+
+                //ModelState.ClearValidationState(nameof(model.Nombre_UnidadMedida));
+                //ModelState.ClearValidationState(nameof(model.Estado));
+
+                TryValidateModel(model);
+
+                if (!ModelState.IsValid)
+                {
+                    return View("~/Views/Inventario/UnidadMedida/UnidadMedida.cshtml", model);
+                }
+                else
+                {
+                    return View("~/Views/Inventario/UnidadMedida/UnidadMedida.cshtml", model);
+                }
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GuardarUnidadMedida(UnidadMedida model)
+        {
+            var unidadMedida = await _apiService.Run("sp_Guardar_UnidadMedida", model);
+
+            if (unidadMedida.Contains("Data is Null") || unidadMedida.Contains("ErrorMessage"))
+            {
+                TempData["Message"] = "Hubo un error al guardar la unidad de medida. Por favor, intenta de nuevo.";
+                TempData["MessageType"] = "danger";
+
+                return RedirectToAction("UnidadMedida", new { ID_UnidadMedida = model.ID_UnidadMedida });
+            }
+            else
+            {
+                TempData["Message"] = "La unidad de medida se guardó correctamente.";
+                TempData["MessageType"] = "success";
+
+                ResponseDataUnidadMedida? _unidadMedida =
+                    JsonConvert.DeserializeObject<ResponseDataUnidadMedida>(unidadMedida.ToString());
+
+                return RedirectToAction("UnidadMedida",
+                    new { ID_UnidadMedida = _unidadMedida?.DATA[0].ID_UnidadMedida });
+            }
+        }
 
     }
 }
