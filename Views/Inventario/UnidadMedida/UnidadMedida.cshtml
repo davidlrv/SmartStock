@@ -36,15 +36,15 @@
                                     @TempData["Message"]
 
                                     <script>
-                                                                        document.addEventListener("DOMContentLoaded", function () {
+                                            document.addEventListener("DOMContentLoaded", function () {
 
-                                                                            Swal.fire({
-                                                                                icon: "success",
-                                                                                text: @Html.Raw(Json.Serialize(TempData["Message"])),
-                                                                                confirmButtonColor: "#198754"
-                                                                            });
+                                                Swal.fire({
+                                                    icon: "success",
+                                                    text: @Html.Raw(Json.Serialize(TempData["Message"])),
+                                                    confirmButtonColor: "#198754"
+                                                });
 
-                                                                        });
+                                            });
                                     </script>
 
                                 </div>
@@ -146,9 +146,9 @@
                                 {
                                     <script>
 
-                                                                        document.getElementById('activo').addEventListener('click', function (e) {
-                                                                            e.preventDefault();
-                                                                        });
+                                        document.getElementById('activo').addEventListener('click', function (e) {
+                                            e.preventDefault();
+                                        });
 
                                     </script>
                                 }
