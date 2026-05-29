@@ -198,6 +198,91 @@ namespace SmartStock.Controllers
             }
         }
 
+        [Authorize]
+        public async Task<IActionResult> ListaFabricante()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+
+            var fabricantes = await _apiService.Run("sp_Mostrar_Fabricante", parametro);
+
+            if (fabricantes.Contains("Data is Null"))
+            {
+                return View("~/Views/Inventario/Fabricante/ListaFabricante.cshtml");
+            }
+            else
+            {
+                ResponseDataFabricante? _fabricantes =
+                    JsonConvert.DeserializeObject<ResponseDataFabricante>(fabricantes.ToString());
+
+                return View("~/Views/Inventario/Fabricante/ListaFabricante.cshtml",
+                    _fabricantes?.DATA);
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Fabricante(Fabricante model)
+        {
+            if (model.ID_Fabricante == null)
+            {
+                model.Estado = true;
+
+                return View("~/Views/Inventario/Fabricante/Fabricante.cshtml", model);
+            }
+
+            var fabricante = await _apiService.Run("sp_Mostrar_Fabricante", model);
+
+            if (fabricante.Contains("Data is Null"))
+            {
+                model.Estado = true;
+
+                return View("~/Views/Inventario/Fabricante/Fabricante.cshtml", model);
+            }
+            else
+            {
+                ResponseDataFabricante? _fabricante =
+                    JsonConvert.DeserializeObject<ResponseDataFabricante>(fabricante.ToString());
+
+                model = _fabricante.DATA[0];
+
+                TryValidateModel(model);
+
+                if (!ModelState.IsValid)
+                {
+                    return View("~/Views/Inventario/Fabricante/Fabricante.cshtml", model);
+                }
+                else
+                {
+                    return View("~/Views/Inventario/Fabricante/Fabricante.cshtml", model);
+                }
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GuardarFabricante(Fabricante model)
+        {
+            var fabricante = await _apiService.Run("sp_Guardar_Fabricante", model);
+
+            if (fabricante.Contains("Data is Null") || fabricante.Contains("Error"))
+            {
+                TempData["Message"] = "Hubo un error al guardar el fabricante. Por favor, intenta de nuevo.";
+                TempData["MessageType"] = "danger";
+
+                return RedirectToAction("Fabricante",
+                    new { ID_Fabricante = model.ID_Fabricante });
+            }
+            else
+            {
+                TempData["Message"] = "El fabricante se guardó correctamente.";
+                TempData["MessageType"] = "success";
+
+                ResponseDataFabricante? _fabricante =
+                    JsonConvert.DeserializeObject<ResponseDataFabricante>(fabricante.ToString());
+
+                return RedirectToAction("Fabricante",
+                    new { ID_Fabricante = _fabricante?.DATA[0].ID_Fabricante });
+            }
+        }
+
 
 
     }

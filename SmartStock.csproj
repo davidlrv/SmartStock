@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Views\Inicio\" />
-    <Folder Include="Views\Inventario\UnidadMedida - Copia\" />
   </ItemGroup>
 
 </Project>

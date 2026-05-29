@@ -1,15 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Unidad de Medida";
+﻿
+@{
+    ViewData["Title"] = "Fabricante";
     Layout = "~/Views/Shared/_LayoutB.cshtml";
 }
 
-@model UnidadMedida
+@model Fabricante
 
 <section class="container-fluid" style="position:relative">
 
-    <h1>📏 Unidad de Medida</h1>
+    <h1>🏭  Fabricante</h1>
 
-    <h4>Se gestionan las Unidades de Medida</h4>
+    <h4>Se gestionan los Fabricantes</h4>
 
     <hr class="m-3">
 
@@ -24,7 +25,7 @@
                     <div class="card">
 
                         <div class="card-header text-center p-3 header-back">
-                            <h3>Unidad de Medida</h3>
+                            <h3>Fabricante</h3>
                         </div>
 
                         <div class="card-body p-3">
@@ -36,47 +37,47 @@
                                     @TempData["Message"]
 
                                     <script>
-                                                                        document.addEventListener("DOMContentLoaded", function () {
+                                        document.addEventListener("DOMContentLoaded", function () {
 
-                                                                            Swal.fire({
-                                                                                icon: "success",
-                                                                                text: @Html.Raw(Json.Serialize(TempData["Message"])),
-                                                                                confirmButtonColor: "#198754"
-                                                                            });
+                                            Swal.fire({
+                                                icon: "success",
+                                                text: @Html.Raw(Json.Serialize(TempData["Message"])),
+                                                confirmButtonColor: "#198754"
+                                            });
 
-                                                                        });
+                                        });
                                     </script>
 
                                 </div>
                             }
 
-                            <form asp-controller="Inventario"
-                                  asp-action="GuardarUnidadMedida"
+                            <form asp-controller="Configuraciones"
+                                  asp-action="GuardarFabricante"
                                   method="post"
                                   id="myForm">
 
                                 <div class="row g-3">
 
                                     @{
-                                        var esSoloLectura = (User.IsInRole("Recepcion") || User.IsInRole("Administrador"));
+                                        var esSoloLectura =
+                                        (User.IsInRole("Recepcion") || User.IsInRole("Administrador"));
                                     }
 
-                                    <!-- Nombre Unidad Medida -->
+                                    <!-- Nombre Fabricante -->
                                     <div class="col-md-12">
 
-                                        <label asp-for="Nombre_UnidadMedida"
-                                               class="control-label"></label>
+                                        <label asp-for="Nombre_Fabricante" class="control-label"></label>
 
-                                        <input asp-for="Nombre_UnidadMedida"
+                                        <input asp-for="Nombre_Fabricante"
                                                class="form-control"
                                                required />
 
-                                        <span asp-validation-for="Nombre_UnidadMedida"
+                                        <span asp-validation-for="Nombre_Fabricante"
                                               class="text-danger"></span>
 
                                     </div>
 
-                                    <!-- Activo -->
+                                    <!-- Estado -->
                                     <div class="col-md-12">
 
                                         <div class="form-check form-switch">
@@ -86,11 +87,8 @@
                                                    type="checkbox"
                                                    id="activo">
 
-                                            <label class="form-check-label"
-                                                   for="Estado">
-
+                                            <label class="form-check-label" for="Estado">
                                                 Estado
-
                                             </label>
 
                                             <span asp-validation-for="Estado"
@@ -105,8 +103,7 @@
                                            type="hidden"
                                            value="@User.Identity.Name" />
 
-                                    <input asp-for="ID_UnidadMedida"
-                                           type="hidden" />
+                                    <input asp-for="ID_Fabricante" type="hidden" />
 
                                 </div>
 
@@ -129,11 +126,12 @@
 
                                     </button>
 
-                                    @if (User.IsInRole("Super Administrador") || User.IsInRole("Administrador"))
+                                    @if (User.IsInRole("Super Administrador")
+                                    || User.IsInRole("Administrador"))
                                     {
                                         <a id="ES"
                                            class="btn btn-outline-success"
-                                           href="/Inventario/ListaUnidadMedida">
+                                           href="/Configuraciones/ListaFabricante">
 
                                             Regresar al Listado
 
@@ -146,9 +144,12 @@
                                 {
                                     <script>
 
-                                                                        document.getElementById('activo').addEventListener('click', function (e) {
-                                                                            e.preventDefault();
-                                                                        });
+                                        document.getElementById('activo')
+                                            .addEventListener('click', function (e) {
+
+                                                e.preventDefault();
+
+                                            });
 
                                     </script>
                                 }
@@ -173,16 +174,20 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Oculta mensajes de validación al cargar
+        // Oculta mensajes de validación
         document.querySelectorAll("span.text-danger").forEach(function (span) {
+
             span.style.display = "none";
+
         });
 
     });
 
     function validateForm() {
 
-        const requiredFields = document.querySelectorAll('#myForm input[required]');
+        const requiredFields =
+            document.querySelectorAll('#myForm input[required]');
+
         let firstMissingField = null;
 
         for (let field of requiredFields) {
@@ -190,7 +195,9 @@
             if (!field.value || !field.checkValidity()) {
 
                 if (!firstMissingField) {
+
                     firstMissingField = field;
+
                 }
 
             }
@@ -202,7 +209,8 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Advertencia',
-                text: 'Algunos campos faltan rellenar o están mal. ' + firstMissingField.name,
+                text: 'Algunos campos faltan rellenar o están mal. '
+                    + firstMissingField.name,
                 confirmButtonText: "Ok"
             }).then(() => {
 
@@ -215,7 +223,9 @@
 
                     firstMissingField.focus();
 
-                    $(firstMissingField).next('span.text-danger').show();
+                    $(firstMissingField)
+                        .next('span.text-danger')
+                        .show();
 
                     $('#mensaje').hide();
 
@@ -224,11 +234,9 @@
             });
 
             return false;
-
         }
 
         return true;
-
     }
 
     function Guardar() {
@@ -244,3 +252,4 @@
     }
 
 </script>
+

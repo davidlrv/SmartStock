@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Ajustes - Inventario ";
+    ViewData["Title"] = "Inventario - Ajustes";
     Layout = "~/Views/Shared/_LayoutB.cshtml";
 }
 
@@ -9,16 +9,7 @@
 
     <div class="row g-4">
 
-        <!-- Empresa -->
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">🏢 Tipos de proveedores</h5>
-                    <p class="card-text"> Agregar, Modificar, Eliminar tipo de proveedor</p>
-                    <a asp-controller="Compra" asp-action="ListaTipos" class="btn btn-outline-primary btn-sm">Gestionar</a>
-                </div>
-            </div>
-        </div>
+       
 
         <!-- Unidad de Medida -->
         <div class="col-md-4">
@@ -41,7 +32,7 @@
                 <div class="card-body">
                     <h5 class="card-title">💲 Impuestos</h5>
                     <p class="card-text">Define IVA, descuentos y reglas de facturación.</p>
-                    <a href="#" class="btn btn-outline-primary btn-sm">Configurar</a>
+                    <a asp-controller="Configuraciones" asp-action="ListaImpuestos" class="btn btn-outline-primary btn-sm">Configurar</a>
                 </div>
             </div>
         </div>
@@ -54,7 +45,7 @@
                     <p class="card-text">
                         Agregar, modificar y eliminar fabricantes de productos y marcas.
                     </p>
-                    <a asp-controller="Inventario" asp-action="ListaFabricantes" class="btn btn-outline-primary btn-sm">
+                    <a asp-controller="Configuraciones" asp-action="ListaFabricante" class="btn btn-outline-primary btn-sm">
                         Gestionar
                     </a>
                 </div>
