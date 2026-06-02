@@ -114,12 +114,12 @@
                                         <label asp-for="Nombre_Rol" class="control-label">Nombre Rol</label>
                                             @if (esSoloLectura)
                                             {
-                                                <select asp-for="Nombre_Rol" class="form-control custom-select-arrow" id="rol" required readonly style="pointer-events: none;">
+                                            <select asp-for="Nombre_Rol" class="form-control custom-select-arrow form-select" id="rol" required readonly style="pointer-events: none;">
                                                    
                                                 </select>
                                              } 
                                              else{
-                                                     <select asp-for="Nombre_Rol" class="form-control custom-select-arrow" id="rol" required>
+                                            <select asp-for="Nombre_Rol" class="form-control custom-select-arrow form-select" id="rol" required>
                                                        
                                                     </select>
                                                }
