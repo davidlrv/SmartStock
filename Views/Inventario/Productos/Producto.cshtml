@@ -1,0 +1,398 @@
+﻿@{
+    ViewData["Title"] = "Producto";
+    Layout = "~/Views/Shared/_LayoutB.cshtml";
+}
+
+@model Producto
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        cargarCategorias();
+        cargarProveedores();
+        cargarFabricantes();
+        cargarUnidadesMedida();
+        cargarImpuestos();
+
+        document.querySelectorAll("span.text-danger").forEach(function (span) {
+            span.style.display = "none";
+        });
+    });
+
+    function cargarCategorias() {
+
+        fetch('/Inventario/GetCategorias')
+            .then(response => response.json())
+            .then(data => {
+
+                let select = document.getElementById("categoria");
+
+                select.innerHTML = '<option value="">Seleccione una categoría</option>';
+
+                data.forEach(item => {
+
+                    let option = document.createElement("option");
+                    option.value = item.iD_Categoria;
+                    option.textContent = item.categoria;
+
+                    select.appendChild(option);
+
+                });
+
+                let selectedValue = '@Model?.ID_Categoria';
+
+                if (selectedValue)
+                    select.value = selectedValue;
+            });
+    }
+
+    function cargarProveedores() {
+
+        fetch('/Inventario/GetProveedores')
+            .then(response => response.json())
+            .then(data => {
+
+                let select = document.getElementById("proveedor");
+
+                select.innerHTML = '<option value="">Seleccione un proveedor</option>';
+
+                data.forEach(item => {
+
+                    let option = document.createElement("option");
+                    option.value = item.iD_Proveedores;
+                    option.textContent = item.nombre;
+
+                    select.appendChild(option);
+
+                });
+
+                let selectedValue = '@Model?.ID_Proveedor';
+
+                if (selectedValue)
+                    select.value = selectedValue;
+            });
+    }
+
+    function cargarFabricantes() {
+
+        fetch('/Inventario/GetFabricantes')
+            .then(response => response.json())
+            .then(data => {
+
+                let select = document.getElementById("fabricante");
+
+                select.innerHTML = '<option value="">Seleccione un fabricante</option>';
+
+                data.forEach(item => {
+
+                    let option = document.createElement("option");
+                    option.value = item.iD_Fabricante;
+                    option.textContent = item.nombre_Fabricante;
+
+                    select.appendChild(option);
+
+                });
+
+                let selectedValue = '@Model?.ID_Fabricante';
+
+                if (selectedValue)
+                    select.value = selectedValue;
+            });
+    }
+
+    function cargarUnidadesMedida() {
+
+        fetch('/Inventario/GetUnidadMedida')
+            .then(response => response.json())
+            .then(data => {
+
+                let select = document.getElementById("unidad");
+
+                select.innerHTML = '<option value="">Seleccione una unidad de medida</option>';
+
+                data.forEach(item => {
+
+                    let option = document.createElement("option");
+                    option.value = item.iD_UnidadMedida;
+                    option.textContent = item.nombre_UnidadMedida;
+
+                    select.appendChild(option);
+
+                });
+
+                let selectedValue = '@Model?.ID_UnidadMedida';
+
+                if (selectedValue)
+                    select.value = selectedValue;
+            });
+    }
+
+    function cargarImpuestos() {
+
+        fetch('/Inventario/GetImpuestos')
+            .then(response => response.json())
+            .then(data => {
+
+                let select = document.getElementById("impuesto");
+
+                select.innerHTML = '<option value="">Seleccione un impuesto</option>';
+
+                data.forEach(item => {
+
+                    let option = document.createElement("option");
+                    option.value = item.iD_Impuesto;
+                    option.textContent = item.nombre_Impuesto + ' (' + item.porcentaje + '%)';
+
+                    select.appendChild(option);
+
+                });
+
+                let selectedValue = '@Model?.ID_Impuesto';
+
+                if (selectedValue)
+                    select.value = selectedValue;
+            });
+    }
+
+    function validateForm() {
+
+        const requiredFields = document.querySelectorAll('#myForm [required]');
+        let firstMissingField = null;
+
+        for (let field of requiredFields) {
+
+            if (!field.value || !field.checkValidity()) {
+
+                if (!firstMissingField)
+                    firstMissingField = field;
+            }
+        }
+
+        if (firstMissingField) {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Advertencia',
+                text: 'Hay campos obligatorios pendientes.',
+                confirmButtonText: 'Aceptar'
+            }).then(() => {
+
+                firstMissingField.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                firstMissingField.focus();
+
+            });
+
+            return false;
+        }
+
+        return true;
+    }
+
+    function Guardar() {
+
+        event.preventDefault();
+
+        if (validateForm()) {
+            document.getElementById("btnSubmit").click();
+        }
+    }
+
+</script>
+
+<section class="container-fluid">
+
+    <h1>Producto</h1>
+    <h4>Gestión de Productos</h4>
+
+    <hr />
+
+    <div class="container mt-4">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8">
+
+                <div class="card shadow">
+
+                    <div class="card-header text-center header-back">
+                        <h3>Producto</h3>
+                    </div>
+
+                    <div class="card-body">
+
+                        @if (TempData["Message"] != null)
+                        {
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+
+                                    Swal.fire({
+                                        icon: "success",
+                                        text: @Html.Raw(Json.Serialize(TempData["Message"])),
+                                        confirmButtonColor: "#198754"
+                                    });
+
+                                });
+                            </script>
+                        }
+
+                        <form asp-controller="Inventario"
+                              asp-action="GuardarProducto"
+                              method="post"
+                              id="myForm">
+
+                            <div class="row g-3">
+
+                                <!-- Código Barras -->
+                                <div class="col-md-6">
+                                    <label asp-for="Cod_Barras"></label>
+                                    <input asp-for="Cod_Barras" class="form-control" required />
+                                </div>
+
+                                <!-- Nombre -->
+                                <div class="col-md-6">
+                                    <label asp-for="Nombre"></label>
+                                    <input asp-for="Nombre" class="form-control" required />
+                                </div>
+
+                                <!-- Categoría -->
+                                <div class="col-md-6">
+                                    <label asp-for="Categoria"></label>
+                                    <select asp-for="ID_Categoria"
+                                            id="categoria"
+                                            class="form-select"
+                                            required>
+                                    </select>
+                                </div>
+
+                                <!-- Proveedor -->
+                                <div class="col-md-6">
+                                    <label asp-for="ID_Proveedor"></label>
+                                    <select asp-for="ID_Proveedor"
+                                            id="proveedor"
+                                            class="form-select"
+                                            required>
+                                    </select>
+                                </div>
+
+                                <!-- Fabricante -->
+                                <div class="col-md-6">
+                                    <label asp-for="ID_Fabricante"></label>
+                                    <select asp-for="ID_Fabricante"
+                                            id="fabricante"
+                                            class="form-select"
+                                            required>
+                                    </select>
+                                </div>
+
+                                <!-- Unidad -->
+                                <div class="col-md-6">
+                                    <label asp-for="ID_UnidadMedida"></label>
+                                    <select asp-for="ID_UnidadMedida"
+                                            id="unidad"
+                                            class="form-select"
+                                            required>
+                                    </select>
+                                </div>
+
+                                <!-- Impuesto -->
+                                <div class="col-md-6">
+                                    <label asp-for="ID_Impuesto"></label>
+                                    <select asp-for="ID_Impuesto"
+                                            id="impuesto"
+                                            class="form-select"
+                                            required>
+                                    </select>
+                                </div>
+
+                                <!-- Stock Minimo -->
+                               @*  <div class="col-md-6">
+                                    <label asp-for="Stock_Minimo"></label>
+                                    <input asp-for="Stock_Minimo"
+                                           class="form-control"
+                                           type="number"
+                                           min="0"
+                                           required />
+                                </div> *@
+
+                              
+
+                                <!-- Precio Venta -->
+                                <div class="col-md-6">
+                                    <label asp-for="Precio"></label>
+                                    <input asp-for="Precio"
+                                           class="form-control"
+                                           type="number"
+                                           step="0.01"
+                                           min="0"
+                                           required />
+                                </div>
+
+                                <!-- Descripción -->
+                                <div class="col-md-12">
+                                    <label asp-for="Descripcion"></label>
+                                    <textarea asp-for="Descripcion"
+                                              class="form-control"
+                                              rows="4"></textarea>
+                                </div>
+
+                                <!-- Estado -->
+                                <div class="col-md-12">
+
+                                    <div class="form-check form-switch">
+
+                                        <input asp-for="Estado"
+                                               class="form-check-input"
+                                               type="checkbox">
+
+                                        <label class="form-check-label">
+                                            Estado
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Hidden -->
+                                <input asp-for="ID_Producto" type="hidden" />
+                                <input asp-for="Usuario" type="hidden" value="@User.Identity.Name" />
+
+                            </div>
+
+                            <div class="mt-4 d-flex gap-2">
+
+                                <button type="button"
+                                        class="btn btn-success"
+                                        onclick="Guardar()">
+                                    Guardar
+                                </button>
+
+                                <button type="submit"
+                                        id="btnSubmit"
+                                        style="display:none;">
+                                    Guardar
+                                </button>
+
+                                <a href="/Inventario/ListaProductos"
+                                   class="btn btn-outline-success">
+                                    Regresar al Listado
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

@@ -249,5 +249,200 @@ namespace SmartStock.Controllers
             }
         }
 
+
+        [Authorize]
+        public async Task<IActionResult> ListaProductos()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var productos = await _apiService.Run("sp_Mostrar_Productos", parametro);
+
+            if (productos.Contains("Data is Null"))
+            {
+                return View("~/Views/Inventario/Productos/ListaProductos.cshtml");
+            }
+            else
+            {
+                ResponseDataProducto? _productos =
+                    JsonConvert.DeserializeObject<ResponseDataProducto>(productos.ToString());
+
+                return View(
+                    "~/Views/Inventario/Productos/ListaProductos.cshtml",
+                    _productos?.DATA
+                );
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Producto(Producto model)
+        {
+            if (model.ID_Producto == null)
+            {
+                model.Estado = true;
+                return View("~/Views/Inventario/Productos/Producto.cshtml", model);
+            }
+
+            var producto = await _apiService.Run("sp_Mostrar_Productos", model);
+
+            if (producto.Contains("Data is Null"))
+            {
+                model.Estado = true;
+                return View("~/Views/Inventario/Productos/Producto.cshtml", model);
+            }
+
+            ResponseDataProducto? _producto =
+                JsonConvert.DeserializeObject<ResponseDataProducto>(producto);
+
+            model = _producto.DATA[0];
+
+            TryValidateModel(model);
+
+            return View("~/Views/Inventario/Productos/Producto.cshtml", model);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GuardarProducto(Producto model)
+        {
+            var producto = await _apiService.Run("sp_Guardar_Productos", model);
+
+            if (producto.Contains("Data is Null")
+                || producto.Contains("Error")
+                || producto.Contains("ErrorMessage"))
+            {
+                TempData["Message"] = "Hubo un error al guardar el producto. Por favor, intenta de nuevo.";
+                TempData["MessageType"] = "danger";
+
+                return RedirectToAction("Producto",
+                    new { ID_Producto = model.ID_Producto });
+            }
+
+            TempData["Message"] = "El producto se guardó correctamente.";
+            TempData["MessageType"] = "success";
+
+            ResponseDataProducto? _producto =
+                JsonConvert.DeserializeObject<ResponseDataProducto>(producto);
+
+            return RedirectToAction("Producto",
+                new { ID_Producto = _producto?.DATA[0].ID_Producto });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategorias()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var categoria = await _apiService.Run("sp_Mostrar_Categoria_Productos", parametro);
+
+            if (string.IsNullOrEmpty(categoria) || categoria.Contains("Data is Null"))
+            {
+                return Ok(new List<object>());
+            }
+
+            try
+            {
+                ResponseDataCategoriaProductos? _categorias =
+                    JsonConvert.DeserializeObject<ResponseDataCategoriaProductos>(categoria);
+
+                return Ok(_categorias?.DATA);
+            }
+            catch (JsonException)
+            {
+                return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProveedores()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var proveedor = await _apiService.Run("sp_Mostrar_Proveedores", parametro);
+
+            if (string.IsNullOrEmpty(proveedor) || proveedor.Contains("Data is Null"))
+            {
+                return Ok(new List<object>());
+            }
+
+            try
+            {
+                ResponseDataProveedor? _proveedores =
+                    JsonConvert.DeserializeObject<ResponseDataProveedor>(proveedor);
+
+                return Ok(_proveedores?.DATA);
+            }
+            catch (JsonException)
+            {
+                return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFabricantes()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var fabricante = await _apiService.Run("sp_Mostrar_Fabricante", parametro);
+
+            if (string.IsNullOrEmpty(fabricante) || fabricante.Contains("Data is Null"))
+            {
+                return Ok(new List<object>());
+            }
+
+            try
+            {
+                ResponseDataFabricante? _fabricantes =
+                    JsonConvert.DeserializeObject<ResponseDataFabricante>(fabricante);
+
+                return Ok(_fabricantes?.DATA);
+            }
+            catch (JsonException)
+            {
+                return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUnidadMedida()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var unidad = await _apiService.Run("sp_Mostrar_UnidadMedida", parametro);
+
+            if (string.IsNullOrEmpty(unidad) || unidad.Contains("Data is Null"))
+            {
+                return Ok(new List<object>());
+            }
+
+            try
+            {
+                ResponseDataUnidadMedida? _unidades =
+                    JsonConvert.DeserializeObject<ResponseDataUnidadMedida>(unidad);
+
+                return Ok(_unidades?.DATA);
+            }
+            catch (JsonException)
+            {
+                return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetImpuestos()
+        {
+            var parametro = "{\"Estado\": \"1\"}";
+            var impuesto = await _apiService.Run("sp_Mostrar_Impuestos", parametro);
+
+            if (string.IsNullOrEmpty(impuesto) || impuesto.Contains("Data is Null"))
+            {
+                return Ok(new List<object>());
+            }
+
+            try
+            {
+                ResponseDataImpuestos? _impuestos =
+                    JsonConvert.DeserializeObject<ResponseDataImpuestos>(impuesto);
+
+                return Ok(_impuestos?.DATA);
+            }
+            catch (JsonException)
+            {
+                return BadRequest("Error al deserializar la respuesta de la API.");
+            }
+        }
     }
 }
